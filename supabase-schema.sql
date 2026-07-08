@@ -1,7 +1,12 @@
 -- Ejecutar esto en el SQL Editor de Supabase
+-- ATENCIÓN: DROP TABLE borra datos existentes. Usa solo si empiezas desde cero.
+
+DROP TABLE IF EXISTS familiares CASCADE;
+DROP TABLE IF EXISTS encuestas CASCADE;
+DROP TABLE IF EXISTS usuarios CASCADE;
 
 -- Tabla de usuarios (encuestadores + admin)
-CREATE TABLE IF NOT EXISTS usuarios (
+CREATE TABLE usuarios (
   username TEXT PRIMARY KEY,
   password TEXT NOT NULL,
   role TEXT NOT NULL DEFAULT 'encuestador' CHECK (role IN ('admin', 'encuestador')),
@@ -10,7 +15,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 );
 
 -- Tabla de encuestas
-CREATE TABLE IF NOT EXISTS encuestas (
+CREATE TABLE encuestas (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   encuestador_id TEXT NOT NULL REFERENCES usuarios(username),
   cedula TEXT NOT NULL,
@@ -26,7 +31,7 @@ CREATE TABLE IF NOT EXISTS encuestas (
 );
 
 -- Tabla de familiares
-CREATE TABLE IF NOT EXISTS familiares (
+CREATE TABLE familiares (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   encuesta_id UUID NOT NULL REFERENCES encuestas(id) ON DELETE CASCADE,
   cedula TEXT NOT NULL,

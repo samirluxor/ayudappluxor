@@ -26,7 +26,7 @@ export async function syncUsuarios() {
       password: u.password,
       role: u.role,
       created_by: u.createdBy,
-    }, { onConflict: 'username' }).select('id').single()
+    }, { onConflict: 'username' }).select('username').single()
 
     if (!error) {
       await db.usuarios.update(u.username, { syncStatus: 'synced' })
