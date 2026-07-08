@@ -19,21 +19,17 @@ export async function buscarCedula(cedula) {
     if (!res.ok) return null
     const data = await res.json()
 
-    if (data?.error) {
-      console.log('API error:', data.error)
-      return null
-    }
+    const d = data?.data
+    if (!d) return null
 
-    console.log('API response:', JSON.stringify(data))
-
-    const nombre = [data.primer_nombre, data.segundo_nombre].filter(Boolean).join(' ')
-    const apellido = [data.primer_apellido, data.segundo_apellido].filter(Boolean).join(' ')
+    const nombre = [d.primer_nombre, d.segundo_nombre].filter(Boolean).join(' ')
+    const apellido = [d.primer_apellido, d.segundo_apellido].filter(Boolean).join(' ')
 
     return {
       nombre,
       apellido,
-      fechaNacimiento: data.fecha_nac || '',
-      sexo: data.sexo || '',
+      fechaNacimiento: d.fecha_nac || '',
+      sexo: d.sexo || '',
     }
   } catch {
     return null
