@@ -19,7 +19,12 @@ export async function buscarCedula(cedula) {
     if (!res.ok) return null
     const data = await res.json()
 
-    if (data?.error) return null
+    if (data?.error) {
+      console.log('API error:', data.error)
+      return null
+    }
+
+    console.log('API response:', JSON.stringify(data))
 
     const nombre = [data.primer_nombre, data.segundo_nombre].filter(Boolean).join(' ')
     const apellido = [data.primer_apellido, data.segundo_apellido].filter(Boolean).join(' ')
