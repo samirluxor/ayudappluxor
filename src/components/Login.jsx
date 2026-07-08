@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import db from '../lib/db'
 
 function PasswordInput({ value, onChange, placeholder, autoComplete }) {
   const [show, setShow] = useState(false)
@@ -28,10 +30,12 @@ function PasswordInput({ value, onChange, placeholder, autoComplete }) {
 
 export default function Login() {
   const { login } = useAuth()
+  const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [resetting, setResetting] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -64,7 +68,21 @@ export default function Login() {
 
           {error && (
             <div className="bg-pastel-red text-red-600 text-sm p-3 rounded-lg">
-              {error}
+              <p>{error}</p>
+              <button
+                type="button"
+                onClick={async () => {
+                  setResetting(true)
+                  localStorage.removeItem('ayudapp_user')
+                  await db.delete()
+                  await db.open()
+                  navigate('/setup')
+                }}
+                disabled={resetting}
+                className="mt-2 text-xs text-red-500 hover:text-red-700 underline"
+              >
+                {resetting ? 'Reiniciando...' : 'Reiniciar datos locales'}
+              </button>
             </div>
           )}
 
