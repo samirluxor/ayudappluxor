@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import db from '../lib/db'
 import { hashPassword } from '../lib/crypto'
+import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext()
 
@@ -21,7 +22,23 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = async (username, password) => {
-    const usuario = await db.usuarios.get(username)
+    let usuario = await db.usuarios.get(username)
+
+    if (!usuario && navigator.onLine) {
+      const { data } = await supabase.from('usuarios').select('*').eq('username', username).single()
+      if (data) {
+        await db.usuarios.add({
+          username: data.username,
+          password: data.password,
+          role: data.role,
+          createdBy: data.created_by,
+          syncStatus: 'synced',
+          createdAt: data.created_at,
+        })
+        usuario = data
+      }
+    }
+
     if (!usuario) throw new Error('Usuario no encontrado')
 
     const hash = await hashPassword(password)
