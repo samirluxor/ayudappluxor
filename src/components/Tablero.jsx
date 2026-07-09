@@ -3,7 +3,7 @@ import { getLocalSurveys } from '../services/sync'
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts'
-import { DocumentTextIcon, UserGroupIcon, UsersIcon } from '@heroicons/react/24/outline'
+import { DocumentTextIcon, HeartIcon, UserGroupIcon, UsersIcon } from '@heroicons/react/24/outline'
 
 const COLORS = ['#3B82F6', '#0EA5E9', '#F59E0B', '#EF4444', '#10B981', '#8B5CF6', '#EC4899', '#F97316']
 
@@ -28,14 +28,21 @@ export default function Tablero() {
   const totalFamiliares = surveys.reduce((s, e) => s + (e.familyMembers?.length || 0), 0)
   const totalPersonas = totalEncuestados + totalFamiliares
 
+  const totalTests = surveys.reduce((s, e) => {
+    let n = e.psico_completado ? 1 : 0
+    for (const fm of (e.familyMembers || [])) {
+      if (fm.psico_completado) n++
+    }
+    return s + n
+  }, 0)
+
   const familiaPorTamano = [0, 0, 0, 0, 0, 0]
   surveys.forEach((s) => {
-    const n = s.familyMembers?.length || 0
+    const n = (s.familyMembers?.length || 0) + 1
     familiaPorTamano[Math.min(n, 5)]++
   })
 
   const familiaData = [
-    { name: '0', value: familiaPorTamano[0] },
     { name: '1', value: familiaPorTamano[1] },
     { name: '2', value: familiaPorTamano[2] },
     { name: '3', value: familiaPorTamano[3] },
@@ -44,16 +51,25 @@ export default function Tablero() {
   ]
 
   const generoMap = { Masculino: 0, Femenino: 0, Otro: 0 }
+  let sinGenero = 0
   surveys.forEach((s) => {
     const g = s.genero || ''
     if (g === 'Masculino' || g === 'M') generoMap.Masculino++
     else if (g === 'Femenino' || g === 'F') generoMap.Femenino++
     else if (g) generoMap.Otro++
+    else sinGenero++
+
+    for (const fm of (s.familyMembers || [])) {
+      const sg = fm.sexo || ''
+      if (sg === 'Masculino' || sg === 'M') generoMap.Masculino++
+      else if (sg === 'Femenino' || sg === 'F') generoMap.Femenino++
+      else if (sg) generoMap.Otro++
+      else sinGenero++
+    }
   })
   const generoData = Object.entries(generoMap)
     .filter(([, v]) => v > 0)
     .map(([name, value]) => ({ name, value }))
-  const sinGenero = surveys.filter((s) => !s.genero).length
 
   const edadRangos = { '0-12': 0, '13-17': 0, '18-30': 0, '31-45': 0, '46-60': 0, '60+': 0 }
   surveys.forEach((s) => {
@@ -90,21 +106,21 @@ export default function Tablero() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
+          <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
+            <HeartIcon className="w-6 h-6 text-purple-600" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-gray-800">{totalTests}</p>
+            <p className="text-sm text-gray-500">Test de Psicobienestar</p>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
           <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
             <DocumentTextIcon className="w-6 h-6 text-blue-600" />
           </div>
           <div>
             <p className="text-2xl font-bold text-gray-800">{totalEncuestados}</p>
-            <p className="text-sm text-gray-500">Encuestas</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
-          <div className="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
-            <UsersIcon className="w-6 h-6 text-sky-600" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-gray-800">{totalFamiliares}</p>
-            <p className="text-sm text-gray-500">Familiares</p>
+            <p className="text-sm text-gray-500">Total de familias</p>
           </div>
         </div>
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
@@ -120,14 +136,14 @@ export default function Tablero() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-          <h3 className="font-semibold text-gray-700 mb-4">Familiares por encuesta</h3>
+          <h3 className="font-semibold text-gray-700 mb-4">Tamaño familiar por encuesta</h3>
           {sinDatos ? (
             <p className="text-gray-400 text-sm text-center py-8">Sin datos disponibles</p>
           ) : (
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={familiaData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="name" label={{ value: 'Cant. familiares', position: 'insideBottom', offset: -5, fontSize: 12, fill: '#9CA3AF' }} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
+                <XAxis dataKey="name" label={{ value: 'Miembros del grupo familiar', position: 'insideBottom', offset: -5, fontSize: 12, fill: '#9CA3AF' }} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e5e7eb', fontSize: 13 }} />
                 <Bar dataKey="value" fill="#3B82F6" radius={[6, 6, 0, 0]} name="Encuestas" />
@@ -143,7 +159,7 @@ export default function Tablero() {
           ) : (
             <div>
               {sinGenero > 0 && (
-                <p className="text-xs text-amber-500 mb-2">{sinGenero} encuesta{sinGenero !== 1 ? 's' : ''} sin género registrado</p>
+                <p className="text-xs text-amber-500 mb-2">{sinGenero} persona{sinGenero !== 1 ? 's' : ''} sin género registrado</p>
               )}
               <ResponsiveContainer width="100%" height={260}>
                 <PieChart>
