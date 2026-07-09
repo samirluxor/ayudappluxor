@@ -10,6 +10,11 @@ export default {
           red: '#FFE0E0',
           'red-hover': '#FFB8B8',
         },
+        blue: {
+          400: '#60A5FA',
+          500: '#073c98',
+          600: '#052d75',
+        },
       },
     },
   },

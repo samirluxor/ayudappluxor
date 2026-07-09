@@ -8,6 +8,7 @@ import SurveyForm from './components/SurveyForm'
 import SurveyDetail from './components/SurveyDetail'
 import UserManagement from './components/UserManagement'
 import Tablero from './components/Tablero'
+import About from './components/About'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -45,6 +46,7 @@ function AppRoutes() {
       <Route path="/survey/:id" element={<ProtectedRoute><SurveyDetail /></ProtectedRoute>} />
       <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
       <Route path="/tablero" element={<ProtectedRoute><Tablero /></ProtectedRoute>} />
+      <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   )
@@ -76,6 +78,7 @@ export default function App() {
           <Route path="/survey/:id" element={<ProtectedRoute><SurveyDetail /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
           <Route path="/tablero" element={<ProtectedRoute><Tablero /></ProtectedRoute>} />
+          <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

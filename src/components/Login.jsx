@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
-import db from '../lib/db'
 
 function PasswordInput({ value, onChange, placeholder, autoComplete }) {
   const [show, setShow] = useState(false)
@@ -30,12 +28,11 @@ function PasswordInput({ value, onChange, placeholder, autoComplete }) {
 
 export default function Login() {
   const { login } = useAuth()
-  const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [resetting, setResetting] = useState(false)
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -54,9 +51,7 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-blue-50 via-white to-sky-100">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-sky-500 rounded-2xl mb-4 shadow-lg">
-            <span className="text-3xl font-bold text-white">AL</span>
-          </div>
+          <img src="/logo.webp" alt="AyudApp Luxor" className="w-20 h-20 mx-auto mb-4 rounded-2xl shadow-lg object-cover" />
           <h1 className="text-3xl font-bold text-gray-800">AyudApp Luxor</h1>
           <p className="text-gray-500 mt-1">Censo y encuestas</p>
         </div>
@@ -69,20 +64,14 @@ export default function Login() {
           {error && (
             <div className="bg-pastel-red text-red-600 text-sm p-3 rounded-lg">
               <p>{error}</p>
-              <button
-                type="button"
-                onClick={async () => {
-                  setResetting(true)
-                  localStorage.removeItem('ayudapp_user')
-                  await db.delete()
-                  await db.open()
-                  navigate('/setup')
-                }}
-                disabled={resetting}
-                className="mt-2 text-xs text-red-500 hover:text-red-700 underline"
+              <a
+                href="https://wa.me/584128445726"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1.5 text-xs text-red-500 hover:text-red-700 underline"
               >
-                {resetting ? 'Reiniciando...' : 'Reiniciar datos locales'}
-              </button>
+                Contactar al administrador por WhatsApp
+              </a>
             </div>
           )}
 
@@ -121,6 +110,9 @@ export default function Login() {
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
+        <p className="text-xs text-gray-600 text-center mt-6 leading-relaxed">
+          Hecho con 💛💙❤️ por el departamento de<br />Talento Humano de Supermercados Luxor
+        </p>
       </div>
     </div>
   )

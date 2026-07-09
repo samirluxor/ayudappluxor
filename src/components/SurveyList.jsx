@@ -1,8 +1,11 @@
 import { useState } from 'react'
-import { MagnifyingGlassIcon, ClipboardDocumentListIcon, PhoneIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon, ClipboardDocumentListIcon, PhoneIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { deleteSurvey } from '../services/sync'
+import ConfirmModal from './ConfirmModal'
 
-export default function SurveyList({ surveys, onView }) {
+export default function SurveyList({ surveys, onView, onDelete }) {
   const [search, setSearch] = useState('')
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   const filtered = surveys.filter((s) => {
     const q = search.toLowerCase()
@@ -41,50 +44,75 @@ export default function SurveyList({ surveys, onView }) {
 
       <div className="space-y-3">
         {filtered.map((survey) => (
-          <button
+          <div
             key={survey.localId}
-            onClick={() => onView(survey.localId)}
-            className="w-full text-left bg-white rounded-2xl shadow-sm border border-gray-200 p-4 hover:shadow-md hover:border-sky-200 transition-all"
+            className="bg-white rounded-2xl shadow-sm border border-gray-200 hover:shadow-md hover:border-sky-200 transition-all"
           >
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold text-gray-800 truncate">
-                  {survey.nombre} {survey.apellido}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {survey.cedula}
-                </p>
-                {survey.telefono && (
-                  <p className="text-sm text-gray-400 flex items-center gap-1">
-                    <PhoneIcon className="w-3.5 h-3.5 text-gray-400" />
-                    {survey.telefono}
+            <button
+              onClick={() => onView(survey.localId)}
+              className="w-full text-left p-4"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-gray-800 truncate">
+                    {survey.nombre} {survey.apellido}
                   </p>
-                )}
+                  <p className="text-sm text-gray-500">
+                    {survey.cedula}
+                  </p>
+                  {survey.telefono && (
+                    <p className="text-sm text-gray-400 flex items-center gap-1">
+                      <PhoneIcon className="w-3.5 h-3.5 text-gray-400" />
+                      {survey.telefono}
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  {survey.syncStatus === 'pending' && (
+                    <span className="text-xs px-2 py-0.5 bg-sky-100 text-blue-600 rounded-full">
+                      Pendiente
+                    </span>
+                  )}
+                  {survey.syncStatus === 'synced' && (
+                    <span className="text-xs px-2 py-0.5 bg-pastel-blue text-blue-600 rounded-full">
+                      Sincronizado
+                    </span>
+                  )}
+                  {survey.syncStatus === 'error' && (
+                    <span className="text-xs px-2 py-0.5 bg-pastel-red text-red-500 rounded-full">
+                      Error
+                    </span>
+                  )}
+                  <span className="text-xs text-gray-400">
+                    {survey.familyMembers?.length || 0} familiares
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col items-end gap-1 shrink-0">
-                {survey.syncStatus === 'pending' && (
-                  <span className="text-xs px-2 py-0.5 bg-sky-100 text-blue-600 rounded-full">
-                    Pendiente
-                  </span>
-                )}
-                {survey.syncStatus === 'synced' && (
-                  <span className="text-xs px-2 py-0.5 bg-pastel-blue text-blue-600 rounded-full">
-                    Sincronizado
-                  </span>
-                )}
-                {survey.syncStatus === 'error' && (
-                  <span className="text-xs px-2 py-0.5 bg-pastel-red text-red-500 rounded-full">
-                    Error
-                  </span>
-                )}
-                <span className="text-xs text-gray-400">
-                  {survey.familyMembers?.length || 0} familiares
-                </span>
-              </div>
+            </button>
+            <div className="px-4 pb-3 flex justify-end">
+              <button
+                onClick={(e) => { e.stopPropagation(); setDeleteTarget(survey) }}
+                className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
+              >
+                <TrashIcon className="w-3.5 h-3.5" />
+                Eliminar
+              </button>
             </div>
-          </button>
+          </div>
         ))}
       </div>
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="Eliminar encuesta"
+        message={`¿Estás seguro de eliminar la encuesta de "${deleteTarget?.nombre} ${deleteTarget?.apellido}"? Esta acción no se puede deshacer.`}
+        onConfirm={async () => {
+          if (!deleteTarget) return
+          await deleteSurvey(deleteTarget.localId)
+          setDeleteTarget(null)
+          onDelete?.()
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }

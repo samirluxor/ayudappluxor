@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { HomeIcon, ChartBarSquareIcon, UsersIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
+import { HomeIcon, ChartBarSquareIcon, UsersIcon, InformationCircleIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 
 const navItems = [
   { label: 'Encuestas', path: '/dashboard', icon: HomeIcon, adminOnly: false },
   { label: 'Tablero', path: '/tablero', icon: ChartBarSquareIcon, adminOnly: false },
   { label: 'Usuarios', path: '/users', icon: UsersIcon, adminOnly: true },
+  { label: 'Más sobre Ayudapp', path: '/about', icon: InformationCircleIcon, adminOnly: false },
 ]
 
 export default function Sidebar() {
@@ -26,9 +27,7 @@ export default function Sidebar() {
     <div className="flex flex-col h-full">
       <div className="p-5 border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-sky-500 rounded-xl flex items-center justify-center shadow-md shrink-0">
-            <span className="text-base font-bold text-white">AL</span>
-          </div>
+          <img src="/logo.webp" alt="Logo" className="w-9 h-9 rounded-xl object-cover shadow-md shrink-0" />
           <div className="min-w-0">
             <p className="font-bold text-gray-800 text-sm truncate">AyudApp Luxor</p>
             <div className="flex items-center gap-1.5">
@@ -63,7 +62,10 @@ export default function Sidebar() {
           })}
       </nav>
 
-      <div className="p-3 border-t border-gray-200">
+      <div className="p-3 border-t border-gray-200 space-y-2">
+        <p className="text-[11px] text-gray-600 leading-relaxed">
+          Hecho con 💛💙❤️ por el departamento de<br />Talento Humano de Supermercados Luxor
+        </p>
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:bg-pastel-red hover:text-red-500 transition-all"
@@ -91,9 +93,7 @@ export default function Sidebar() {
               )}
             </svg>
           </button>
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-sky-500 rounded-lg flex items-center justify-center shadow-sm">
-            <span className="text-sm font-bold text-white">AL</span>
-          </div>
+          <img src="/logo.webp" alt="Logo" className="w-8 h-8 rounded-lg object-cover shadow-sm" />
           <span className="font-bold text-gray-800 text-sm">AyudApp Luxor</span>
         </div>
       </div>

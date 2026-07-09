@@ -65,7 +65,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('ayudapp_user')
   }
 
-  const createUser = async (username, password, role = 'encuestador') => {
+  const createUser = async (username, password, role = 'encuestador', extra = {}) => {
     const key = username.toLowerCase()
     const existing = await db.usuarios.get(key)
     if (existing) throw new Error('El usuario ya existe')
@@ -75,6 +75,8 @@ export function AuthProvider({ children }) {
       username: key,
       password: hash,
       role,
+      nombre: extra.nombre || '',
+      apellido: extra.apellido || '',
       createdBy: user?.username || null,
       syncStatus: 'pending',
       createdAt: new Date().toISOString(),
@@ -83,14 +85,39 @@ export function AuthProvider({ children }) {
     return { username: key, role }
   }
 
+  const updatePassword = async (username, newPassword) => {
+    const key = username.toLowerCase()
+    const existing = await db.usuarios.get(key)
+    if (!existing) throw new Error('Usuario no encontrado')
+    const hash = await hashPassword(newPassword)
+    await db.usuarios.update(key, {
+      password: hash,
+      syncStatus: 'pending',
+    })
+    if (navigator.onLine) {
+      await supabase.from('usuarios').upsert({
+        username: key,
+        password: hash,
+        role: existing.role,
+        nombre: existing.nombre || '',
+        apellido: existing.apellido || '',
+        created_by: existing.createdBy,
+      }, { onConflict: 'username' })
+      await db.usuarios.update(key, { syncStatus: 'synced' })
+    }
+  }
+
   const deleteUser = async (username) => {
     const key = username.toLowerCase()
     if (key === 'admin') throw new Error('No se puede eliminar el admin principal')
     await db.usuarios.delete(key)
+    if (navigator.onLine) {
+      await supabase.from('usuarios').delete().eq('username', key)
+    }
   }
 
   const getAllUsers = useCallback(async () => {
-    return db.usuarios.where('role').notEqual('admin').toArray()
+    return db.usuarios.toArray()
   }, [])
 
   const checkAdminExists = useCallback(async () => {
@@ -123,6 +150,7 @@ export function AuthProvider({ children }) {
       login,
       logout,
       createUser,
+      updatePassword,
       deleteUser,
       getAllUsers,
       checkAdminExists,

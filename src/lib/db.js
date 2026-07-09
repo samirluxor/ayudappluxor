@@ -9,4 +9,11 @@ db.version(3).stores({
   usuarios: '&username, role, syncStatus',
 })
 
+db.version(4).stores({
+  surveys: '++localId, remoteId, syncStatus, createdAt, encuestadorId, cedula',
+  familyMembers: '++localId, surveyLocalId, syncStatus, cedula',
+  syncQueue: '++id, type, action, createdAt',
+  usuarios: '&username, role, syncStatus',
+})
+
 export default db

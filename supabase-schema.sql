@@ -10,9 +10,15 @@ CREATE TABLE usuarios (
   username TEXT PRIMARY KEY,
   password TEXT NOT NULL,
   role TEXT NOT NULL DEFAULT 'encuestador' CHECK (role IN ('admin', 'encuestador')),
+  nombre TEXT DEFAULT '',
+  apellido TEXT DEFAULT '',
   created_by TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- Migración segura: agrega columnas si no existen (útil si ya corriste el schema antes)
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS nombre TEXT DEFAULT '';
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS apellido TEXT DEFAULT '';
 
 -- Tabla de encuestas
 CREATE TABLE encuestas (
@@ -26,6 +32,13 @@ CREATE TABLE encuestas (
   direccion_fiscal TEXT,
   telefono TEXT,
   local_id TEXT,
+  nivel_ansiedad TEXT,
+  estado_familiar TEXT,
+  condicion_vivienda TEXT,
+  fallecimiento_familiares TEXT,
+  familiares_desaparecidos TEXT,
+  observacion_estado_familiar TEXT,
+  observacion_condicion_vivienda TEXT,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
 );
@@ -38,8 +51,24 @@ CREATE TABLE familiares (
   nombre TEXT NOT NULL,
   apellido TEXT NOT NULL,
   parentesco TEXT NOT NULL,
+  sexo TEXT,
+  fecha_nacimiento DATE,
+  requiere_apoyo BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now()
 );
+
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS sexo TEXT;
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS fecha_nacimiento DATE;
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS requiere_apoyo BOOLEAN DEFAULT false;
+
+-- Migración segura para columnas nuevas en encuestas
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS nivel_ansiedad TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS estado_familiar TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS condicion_vivienda TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS fallecimiento_familiares TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS familiares_desaparecidos TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS observacion_estado_familiar TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS observacion_condicion_vivienda TEXT;
 
 -- Índices
 CREATE INDEX IF NOT EXISTS idx_encuestas_encuestador ON encuestas(encuestador_id);

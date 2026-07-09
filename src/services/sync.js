@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase'
 import db from '../lib/db'
+import { buscarCedula } from './cedula'
 
 let isSyncing = false
 let listeners = []
@@ -25,6 +26,8 @@ export async function syncUsuarios() {
       username: u.username,
       password: u.password,
       role: u.role,
+      nombre: u.nombre || '',
+      apellido: u.apellido || '',
       created_by: u.createdBy,
     }, { onConflict: 'username' }).select('username').single()
 
@@ -35,20 +38,31 @@ export async function syncUsuarios() {
 
   // Pull remote usuarios
   const { data: remote } = await supabase.from('usuarios').select('*')
+  const remoteKeys = new Set()
   if (remote) {
     for (const r of remote) {
       const key = r.username.toLowerCase()
+      remoteKeys.add(key)
       const local = await db.usuarios.get(key)
       if (!local) {
         await db.usuarios.add({
           username: key,
           password: r.password,
           role: r.role,
+          nombre: r.nombre || '',
+          apellido: r.apellido || '',
           createdBy: r.created_by,
           syncStatus: 'synced',
           createdAt: r.created_at,
         })
       }
+    }
+  }
+  // Eliminar locales que ya no existen en remoto (excepto pendientes de sync)
+  const allLocal = await db.usuarios.toArray()
+  for (const u of allLocal) {
+    if (u.syncStatus !== 'pending' && !remoteKeys.has(u.username)) {
+      await db.usuarios.delete(u.username)
     }
   }
 }
@@ -66,14 +80,32 @@ export async function syncSurveys() {
 
     for (const survey of pendingSurveys) {
       try {
+        let nombre = survey.nombre
+        let apellido = survey.apellido
+        if (!nombre || !apellido) {
+          const data = await buscarCedula(survey.cedula)
+          if (data) {
+            nombre = data.nombre || nombre
+            apellido = data.apellido || apellido
+            await db.surveys.update(survey.localId, { nombre, apellido })
+          }
+        }
+
         const { data, error } = await supabase.from('encuestas').insert({
           cedula: survey.cedula,
-          nombre: survey.nombre,
-          apellido: survey.apellido,
+          nombre,
+          apellido,
           genero: survey.genero || null,
           fecha_nacimiento: survey.fecha_nacimiento || null,
           direccion_fiscal: survey.direccion_fiscal,
           telefono: survey.telefono,
+          nivel_ansiedad: survey.nivel_ansiedad || null,
+          estado_familiar: survey.estado_familiar || null,
+          condicion_vivienda: survey.condicion_vivienda || null,
+          fallecimiento_familiares: survey.fallecimiento_familiares || null,
+          familiares_desaparecidos: survey.familiares_desaparecidos || null,
+          observacion_estado_familiar: survey.observacion_estado_familiar || null,
+          observacion_condicion_vivienda: survey.observacion_condicion_vivienda || null,
           encuestador_id: survey.encuestadorId,
           local_id: String(survey.localId),
         }).select('id').single()
@@ -90,12 +122,26 @@ export async function syncSurveys() {
           .toArray()
 
         for (const fm of pendingFamily) {
+          let fmNombre = fm.nombre
+          let fmApellido = fm.apellido
+          if (!fmNombre || !fmApellido) {
+            const fmData = await buscarCedula(fm.cedula)
+            if (fmData) {
+              fmNombre = fmData.nombre || fmNombre
+              fmApellido = fmData.apellido || fmApellido
+              await db.familyMembers.update(fm.localId, { nombre: fmNombre, apellido: fmApellido })
+            }
+          }
+
           const { error: fmError } = await supabase.from('familiares').insert({
             encuesta_id: data.id,
             cedula: fm.cedula,
-            nombre: fm.nombre,
-            apellido: fm.apellido,
+            nombre: fmNombre,
+            apellido: fmApellido,
             parentesco: fm.parentesco,
+            sexo: fm.sexo || null,
+            fecha_nacimiento: fm.fecha_nacimiento || null,
+            requiere_apoyo: fm.requiereApoyo || false,
           })
           if (fmError) throw fmError
           await db.familyMembers.update(fm.localId, { syncStatus: 'synced' })
@@ -164,6 +210,21 @@ export async function getLocalSurvey(localId) {
   return { ...survey, familyMembers }
 }
 
+export async function deleteSurvey(localId) {
+  const survey = await db.surveys.get(localId)
+  if (!survey) return
+
+  await db.familyMembers.where('surveyLocalId').equals(localId).delete()
+  await db.surveys.delete(localId)
+
+  if (navigator.onLine) {
+    if (survey.remoteId) {
+      await supabase.from('familiares').delete().eq('encuesta_id', survey.remoteId)
+      await supabase.from('encuestas').delete().eq('id', survey.remoteId)
+    }
+  }
+}
+
 export async function fetchRemoteSurveys(encuestadorId) {
   if (!navigator.onLine) return
 
@@ -193,6 +254,13 @@ export async function fetchRemoteSurveys(encuestadorId) {
         fecha_nacimiento: remote.fecha_nacimiento || null,
         direccion_fiscal: remote.direccion_fiscal,
         telefono: remote.telefono,
+        nivel_ansiedad: remote.nivel_ansiedad || '',
+        estado_familiar: remote.estado_familiar || '',
+        condicion_vivienda: remote.condicion_vivienda || '',
+        fallecimiento_familiares: remote.fallecimiento_familiares || '',
+        familiares_desaparecidos: remote.familiares_desaparecidos || '',
+        observacion_estado_familiar: remote.observacion_estado_familiar || '',
+        observacion_condicion_vivienda: remote.observacion_condicion_vivienda || '',
         encuestadorId: remote.encuestador_id,
         remoteId: remote.id,
         syncStatus: 'synced',
@@ -206,6 +274,9 @@ export async function fetchRemoteSurveys(encuestadorId) {
           nombre: fm.nombre,
           apellido: fm.apellido,
           parentesco: fm.parentesco,
+          sexo: fm.sexo || '',
+          fecha_nacimiento: fm.fecha_nacimiento || '',
+          requiereApoyo: fm.requiere_apoyo || false,
           surveyLocalId: localId,
           syncStatus: 'synced',
           createdAt: fm.created_at,

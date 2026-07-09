@@ -82,7 +82,7 @@ export default function Dashboard() {
         </button>
       </div>
 
-      <SurveyList surveys={surveys} onView={handleViewSurvey} />
+      <SurveyList surveys={surveys} onView={handleViewSurvey} onDelete={loadSurveys} />
     </div>
   )
 }
