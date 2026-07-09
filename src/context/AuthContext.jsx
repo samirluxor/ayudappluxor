@@ -49,7 +49,8 @@ export function AuthProvider({ children }) {
     localStorage.setItem('ayudapp_user', JSON.stringify(userData))
 
     if (navigator.onLine) {
-      import('../services/sync').then(({ fetchRemoteSurveys, syncSurveys }) => {
+      import('../services/sync').then(({ syncUsuarios, fetchRemoteSurveys, syncSurveys }) => {
+        syncUsuarios().catch(() => {})
         fetchRemoteSurveys(username).catch(() => {})
         syncSurveys().catch(() => {})
       })

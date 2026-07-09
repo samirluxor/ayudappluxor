@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { EyeIcon, EyeSlashIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { syncUsuarios } from '../services/sync'
 
 function PasswordInput({ value, onChange, placeholder }) {
   const [show, setShow] = useState(false)
@@ -42,7 +43,12 @@ export default function UserManagement() {
   }, [isAdmin, navigate])
 
   useEffect(() => {
-    getAllUsers().then(setUsers)
+    async function load() {
+      if (navigator.onLine) await syncUsuarios()
+      const u = await getAllUsers()
+      setUsers(u)
+    }
+    load()
   }, [getAllUsers])
 
   const handleCreate = async (e) => {
