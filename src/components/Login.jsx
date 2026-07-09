@@ -75,6 +75,30 @@ function MedicalIcon({ className }) {
   )
 }
 
+function PasswordInput({ value, onChange, placeholder, autoComplete }) {
+  const [show, setShow] = useState(false)
+  return (
+    <div className="relative">
+      <input
+        type={show ? 'text' : 'password'}
+        value={value}
+        onChange={onChange}
+        className="w-full px-4 py-2.5 pr-10 border border-gray-200 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition"
+        placeholder={placeholder}
+        required
+        autoComplete={autoComplete}
+      />
+      <button
+        type="button"
+        onClick={() => setShow(!show)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+      >
+        {show ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+      </button>
+    </div>
+  )
+}
+
 const iconTiles = [
   { icon: HeartIcon, bg: '#ef4444' },
   { icon: HandRaisedIcon, bg: '#f97316' },
