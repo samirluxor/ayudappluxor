@@ -188,8 +188,38 @@ export async function updateFamilyPsychTest(localId, psychData) {
     ...psychData,
     syncStatus: 'pending',
   })
-  if (fm) {
-    await db.surveys.update(fm.surveyLocalId, { syncStatus: 'pending' })
+  if (!fm) return
+
+  await db.surveys.update(fm.surveyLocalId, { syncStatus: 'pending' })
+
+  if (navigator.onLine) {
+    const survey = await db.surveys.get(fm.surveyLocalId)
+    if (survey?.remoteId) {
+      await supabase.from('familiares').delete().eq('encuesta_id', survey.remoteId).eq('cedula', fm.cedula)
+      const { error } = await supabase.from('familiares').insert({
+        encuesta_id: survey.remoteId,
+        cedula: fm.cedula,
+        nombre: fm.nombre || '',
+        apellido: fm.apellido || '',
+        parentesco: fm.parentesco || '',
+        sexo: fm.sexo || null,
+        fecha_nacimiento: fm.fecha_nacimiento || null,
+        requiere_apoyo: fm.requiereApoyo || false,
+        psico_nivel_ansiedad: psychData.psico_nivel_ansiedad || null,
+        psico_estado_familiar: psychData.psico_estado_familiar || null,
+        psico_condicion_vivienda: psychData.psico_condicion_vivienda || null,
+        psico_fallecimiento_familiares: psychData.psico_fallecimiento_familiares || null,
+        psico_familiares_desaparecidos: psychData.psico_familiares_desaparecidos || null,
+        psico_observacion_estado_familiar: psychData.psico_observacion_estado_familiar || null,
+        psico_observacion_condicion_vivienda: psychData.psico_observacion_condicion_vivienda || null,
+        psico_completado: psychData.psico_completado || false,
+      })
+      if (error) {
+        console.error('Error syncing family psych test:', error)
+      } else {
+        await db.familyMembers.update(localId, { syncStatus: 'synced' })
+      }
+    }
   }
 }
 
@@ -294,6 +324,17 @@ export async function fetchRemoteSurveys(encuestadorId) {
   if (error) {
     console.error('Error fetching remote surveys:', error)
     return
+  }
+
+  const remoteIds = new Set(data.map((r) => r.id))
+
+  const localWithRemote = (await db.surveys.toArray()).filter((s) => s.remoteId)
+
+  for (const local of localWithRemote) {
+    if (!remoteIds.has(local.remoteId)) {
+      await db.familyMembers.where('surveyLocalId').equals(local.localId).delete()
+      await db.surveys.delete(local.localId)
+    }
   }
 
   for (const remote of data) {
