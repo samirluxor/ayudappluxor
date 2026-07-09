@@ -107,23 +107,26 @@ export default function Psicobienestar() {
 
       const virtualEncuestados = allSurveys
         .filter((s) => s.nombre)
-        .map((s) => ({
-          localId: `enc-${s.localId}`,
-          surveyLocalId: s.localId,
-          nombre: s.nombre,
-          apellido: s.apellido,
-          cedula: s.cedula,
-          parentesco: 'Titular (Encuestado)',
-          psico_nivel_ansiedad: s.psico_nivel_ansiedad || '',
-          psico_estado_familiar: s.psico_estado_familiar || '',
-          psico_condicion_vivienda: s.psico_condicion_vivienda || '',
-          psico_fallecimiento_familiares: s.psico_fallecimiento_familiares || '',
-          psico_familiares_desaparecidos: s.psico_familiares_desaparecidos || '',
-          psico_observacion_estado_familiar: s.psico_observacion_estado_familiar || '',
-          psico_observacion_condicion_vivienda: s.psico_observacion_condicion_vivienda || '',
-          psico_completado: s.psico_completado || false,
-          isEncuestado: true,
-        }))
+        .map((s) => {
+          const oldCompleted = !!(s.nivel_ansiedad && s.estado_familiar && s.condicion_vivienda && s.fallecimiento_familiares && s.familiares_desaparecidos)
+          return {
+            localId: `enc-${s.localId}`,
+            surveyLocalId: s.localId,
+            nombre: s.nombre,
+            apellido: s.apellido,
+            cedula: s.cedula,
+            parentesco: 'Titular (Encuestado)',
+            psico_nivel_ansiedad: s.psico_nivel_ansiedad || s.nivel_ansiedad || '',
+            psico_estado_familiar: s.psico_estado_familiar || s.estado_familiar || '',
+            psico_condicion_vivienda: s.psico_condicion_vivienda || s.condicion_vivienda || '',
+            psico_fallecimiento_familiares: s.psico_fallecimiento_familiares || s.fallecimiento_familiares || '',
+            psico_familiares_desaparecidos: s.psico_familiares_desaparecidos || s.familiares_desaparecidos || '',
+            psico_observacion_estado_familiar: s.psico_observacion_estado_familiar || s.observacion_estado_familiar || '',
+            psico_observacion_condicion_vivienda: s.psico_observacion_condicion_vivienda || s.observacion_condicion_vivienda || '',
+            psico_completado: s.psico_completado || oldCompleted,
+            isEncuestado: true,
+          }
+        })
 
       setFamilyMembers([...virtualEncuestados, ...allFam])
       setLoading(false)
