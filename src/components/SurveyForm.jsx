@@ -130,7 +130,8 @@ export default function SurveyForm() {
   ]
 
   const handleChange = (e) => {
-    setSurvey((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    const value = e.target.name === 'cedula' ? e.target.value.replace(/\D/g, '') : e.target.value
+    setSurvey((prev) => ({ ...prev, [e.target.name]: value }))
   }
 
   const handleAddressSelect = (address) => {
@@ -255,11 +256,12 @@ export default function SurveyForm() {
             <div className="relative">
               <input
                 type="text"
+                inputMode="numeric"
                 name="cedula"
                 value={survey.cedula}
                 onChange={(e) => { handleChange(e); buscarAuto(e.target.value) }}
                 className="w-full px-4 py-2.5 pr-10 border border-gray-200 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition"
-                placeholder="V-12345678"
+                placeholder="12345678"
                 required
               />
               {buscando && (

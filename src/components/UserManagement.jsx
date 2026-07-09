@@ -193,10 +193,11 @@ export default function UserManagement() {
               <div className="relative">
                 <input
                   type="text"
+                  inputMode="numeric"
                   value={cedula}
-                  onChange={(e) => { setCedula(e.target.value); buscarAuto(e.target.value) }}
+                  onChange={(e) => { const v = e.target.value.replace(/\D/g, ''); setCedula(v); buscarAuto(v) }}
                   className="w-full px-3 py-2 pr-8 border border-gray-200 rounded-lg bg-white text-gray-700 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition"
-                  placeholder="V-12345678"
+                  placeholder="12345678"
                   required
                 />
                 {buscando && (
