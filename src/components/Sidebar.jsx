@@ -132,7 +132,7 @@ export default function Sidebar({ open, setOpen }) {
       )}
 
       <div
-        className={`lg:hidden fixed top-0 left-0 z-20 h-full w-64 bg-white shadow-2xl border-r border-gray-200 transform transition-transform duration-200 ${
+        className={`lg:hidden fixed top-0 left-0 z-20 h-full w-64 bg-white shadow-2xl border-r border-gray-200 transform transition-transform duration-200 pt-14 ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
