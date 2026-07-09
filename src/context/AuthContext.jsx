@@ -47,6 +47,14 @@ export function AuthProvider({ children }) {
     const userData = { username: usuario.username, role: usuario.role }
     setUser(userData)
     localStorage.setItem('ayudapp_user', JSON.stringify(userData))
+
+    if (navigator.onLine) {
+      import('../services/sync').then(({ fetchRemoteSurveys, syncSurveys }) => {
+        fetchRemoteSurveys(username).catch(() => {})
+        syncSurveys().catch(() => {})
+      })
+    }
+
     return userData
   }
 
@@ -82,8 +90,25 @@ export function AuthProvider({ children }) {
   }, [])
 
   const checkAdminExists = useCallback(async () => {
-    const admin = await db.usuarios.get('admin')
-    return !!admin
+    const local = await db.usuarios.get('admin')
+    if (local) return true
+
+    if (navigator.onLine) {
+      const { data } = await supabase.from('usuarios').select('*').eq('username', 'admin').single()
+      if (data) {
+        await db.usuarios.add({
+          username: data.username,
+          password: data.password,
+          role: data.role,
+          createdBy: data.created_by,
+          syncStatus: 'synced',
+          createdAt: data.created_at,
+        })
+        return true
+      }
+    }
+
+    return false
   }, [])
 
   return (
