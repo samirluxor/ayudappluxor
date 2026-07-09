@@ -26,6 +26,10 @@ function PasswordInput({ value, onChange, placeholder, autoComplete }) {
   )
 }
 
+const collageImages = Array.from({ length: 20 }, (_, i) =>
+  `https://picsum.photos/seed/p${i + 1}/400/300`
+)
+
 export default function Login() {
   const { login } = useAuth()
   const [username, setUsername] = useState('')
@@ -48,15 +52,25 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-blue-50 via-white to-sky-100">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-sky-100">
+      <div className="absolute inset-0 grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-1 opacity-15 pointer-events-none">
+        {collageImages.map((src, i) => (
+          <div
+            key={i}
+            className="bg-gray-200 bg-cover bg-center rounded"
+            style={{ backgroundImage: `url(${src})`, aspectRatio: '4/3' }}
+          />
+        ))}
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-transparent to-white/60 pointer-events-none" />
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
           <img src="/logo.webp" alt="AyudApp Luxor" className="w-20 h-20 mx-auto mb-4 rounded-2xl shadow-lg object-cover" />
           <h1 className="text-3xl font-bold text-gray-800">AyudApp Luxor</h1>
           <p className="text-gray-500 mt-1">Censo y encuestas</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-6 space-y-4">
           <h2 className="text-xl font-semibold text-gray-800 text-center">
             Iniciar Sesión
           </h2>
