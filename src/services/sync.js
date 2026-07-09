@@ -182,10 +182,14 @@ export async function syncSurveys() {
 }
 
 export async function updateFamilyPsychTest(localId, psychData) {
+  const fm = await db.familyMembers.get(localId)
   await db.familyMembers.update(localId, {
     ...psychData,
     syncStatus: 'pending',
   })
+  if (fm) {
+    await db.surveys.update(fm.surveyLocalId, { syncStatus: 'pending' })
+  }
 }
 
 export async function updateSurveyLocally(localId, surveyData, familyMembers = []) {
