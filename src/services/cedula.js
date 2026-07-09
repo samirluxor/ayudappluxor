@@ -2,16 +2,25 @@ const API_URL = '/api/cedula'
 const APP_ID = '9172'
 const TOKEN = '5a33185978a57f0053f7b9e4d148570c'
 
+const genderCache = {}
+let lastGenderReq = 0
+
 async function predecirGenero(nombre) {
   const primerNombre = nombre?.split(' ')[0]?.toLowerCase()
   if (!primerNombre) return ''
+  if (genderCache[primerNombre]) return genderCache[primerNombre]
+
+  const ahora = Date.now()
+  if (ahora - lastGenderReq < 1000) return ''
+  lastGenderReq = ahora
+
   try {
     const res = await fetch(`https://api.genderize.io?name=${primerNombre}`)
     if (!res.ok) return ''
     const data = await res.json()
-    if (data.gender === 'male') return 'Masculino'
-    if (data.gender === 'female') return 'Femenino'
-    return ''
+    const genero = data.gender === 'male' ? 'Masculino' : data.gender === 'female' ? 'Femenino' : ''
+    genderCache[primerNombre] = genero
+    return genero
   } catch {
     return ''
   }
