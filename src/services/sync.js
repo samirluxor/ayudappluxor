@@ -34,10 +34,13 @@ export async function syncUsuarios() {
   }
 
   // Pull remote usuarios
-  const { data: remote } = await supabase.from('usuarios').select('*')
+  const { data: remote, error } = await supabase.from('usuarios').select('*')
+  if (error) { console.error('syncUsuarios error:', error); return }
+  console.log('syncUsuarios: remote users found:', remote?.length, remote?.map(r => ({ username: r.username, role: r.role })))
   if (remote) {
     for (const r of remote) {
       const local = await db.usuarios.get(r.username)
+      console.log('syncUsuarios: processing', r.username, 'local exists:', !!local)
       if (!local) {
         await db.usuarios.add({
           username: r.username,
@@ -50,6 +53,8 @@ export async function syncUsuarios() {
       }
     }
   }
+  const allLocal = await db.usuarios.toArray()
+  console.log('syncUsuarios: all local users after sync:', allLocal.map(u => ({ username: u.username, role: u.role })))
 }
 
 export async function syncSurveys() {

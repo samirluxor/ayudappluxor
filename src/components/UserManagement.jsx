@@ -46,6 +46,7 @@ export default function UserManagement() {
     async function load() {
       if (navigator.onLine) await syncUsuarios()
       const u = await getAllUsers()
+      console.log('UserManagement: getAllUsers result:', u)
       setUsers(u)
     }
     load()
