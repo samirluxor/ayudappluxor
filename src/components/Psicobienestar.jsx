@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import db from '../lib/db'
-import { updateFamilyPsychTest } from '../services/sync'
+import { updateFamilyPsychTest, updateSurveyPsychTest } from '../services/sync'
 
 const psychQuestions = [
   {
@@ -104,7 +104,28 @@ export default function Psicobienestar() {
       setSurveys(surveyMap)
 
       const allFam = await db.familyMembers.toArray()
-      setFamilyMembers(allFam)
+
+      const virtualEncuestados = allSurveys
+        .filter((s) => s.nombre)
+        .map((s) => ({
+          localId: `enc-${s.localId}`,
+          surveyLocalId: s.localId,
+          nombre: s.nombre,
+          apellido: s.apellido,
+          cedula: s.cedula,
+          parentesco: 'Titular (Encuestado)',
+          psico_nivel_ansiedad: s.psico_nivel_ansiedad || '',
+          psico_estado_familiar: s.psico_estado_familiar || '',
+          psico_condicion_vivienda: s.psico_condicion_vivienda || '',
+          psico_fallecimiento_familiares: s.psico_fallecimiento_familiares || '',
+          psico_familiares_desaparecidos: s.psico_familiares_desaparecidos || '',
+          psico_observacion_estado_familiar: s.psico_observacion_estado_familiar || '',
+          psico_observacion_condicion_vivienda: s.psico_observacion_condicion_vivienda || '',
+          psico_completado: s.psico_completado || false,
+          isEncuestado: true,
+        }))
+
+      setFamilyMembers([...virtualEncuestados, ...allFam])
       setLoading(false)
     }
     load()
@@ -128,7 +149,11 @@ export default function Psicobienestar() {
     if (!editing) return
     setSaving(true)
     const completed = psychQuestions.every((q) => answers[q.field])
-    await updateFamilyPsychTest(editing.localId, { ...answers, psico_completado: completed })
+    if (editing.isEncuestado) {
+      await updateSurveyPsychTest(editing.surveyLocalId, { ...answers, psico_completado: completed })
+    } else {
+      await updateFamilyPsychTest(editing.localId, { ...answers, psico_completado: completed })
+    }
     setFamilyMembers((prev) =>
       prev.map((fm) =>
         fm.localId === editing.localId ? { ...fm, ...answers, psico_completado: completed } : fm
@@ -155,7 +180,7 @@ export default function Psicobienestar() {
           <div>
             <h2 className="text-2xl font-bold text-gray-800">Test de Psicobienestar</h2>
             <p className="text-gray-500 text-sm">
-              Familiar: {editing.nombre} {editing.apellido}
+              {editing.isEncuestado ? 'Titular' : 'Familiar'}: {editing.nombre} {editing.apellido}
             </p>
           </div>
           <button onClick={() => { setEditing(null); setPsychStep(0) }} className="text-sm text-gray-400 hover:text-gray-600">← Volver</button>
@@ -249,7 +274,7 @@ export default function Psicobienestar() {
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Psicobienestar</h2>
           <p className="text-gray-500 text-sm">
-            {filtered.length} familiar{filtered.length !== 1 ? 'es' : ''} registrado{filtered.length !== 1 ? 's' : ''}
+            {filtered.length} persona{filtered.length !== 1 ? 's' : ''} registrada{filtered.length !== 1 ? 's' : ''}
             {totalPendientes > 0 && <span className="text-amber-500 ml-1">· {totalPendientes} pendiente{totalPendientes !== 1 ? 's' : ''}</span>}
           </p>
         </div>
@@ -266,7 +291,7 @@ export default function Psicobienestar() {
 
       {filtered.length === 0 && (
         <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
-          <p className="text-gray-400">{search ? 'No se encontraron familiares' : 'No hay familiares registrados'}</p>
+          <p className="text-gray-400">{search ? 'No se encontraron personas' : 'No hay personas registradas'}</p>
         </div>
       )}
 

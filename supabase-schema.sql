@@ -77,6 +77,14 @@ ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS fallecimiento_familiares TEXT;
 ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS familiares_desaparecidos TEXT;
 ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS observacion_estado_familiar TEXT;
 ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS observacion_condicion_vivienda TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS psico_nivel_ansiedad TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS psico_estado_familiar TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS psico_condicion_vivienda TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS psico_fallecimiento_familiares TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS psico_familiares_desaparecidos TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS psico_observacion_estado_familiar TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS psico_observacion_condicion_vivienda TEXT;
+ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS psico_completado BOOLEAN DEFAULT false;
 
 -- Índices
 CREATE INDEX IF NOT EXISTS idx_encuestas_encuestador ON encuestas(encuestador_id);

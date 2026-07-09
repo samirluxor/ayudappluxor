@@ -176,6 +176,24 @@ export default function SurveyDetail() {
         </div>
       )}
 
+      {survey.psico_completado && (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
+          <h3 className="font-semibold text-gray-700 border-b border-gray-200 pb-2 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+            Psicobienestar del Encuestado ✓
+          </h3>
+          <div className="space-y-1.5 text-sm">
+            {survey.psico_nivel_ansiedad && <p className="text-gray-500"><span className="text-gray-400">Nivel ansiedad:</span> {survey.psico_nivel_ansiedad}</p>}
+            {survey.psico_estado_familiar && <p className="text-gray-500"><span className="text-gray-400">Estado familiar:</span> {survey.psico_estado_familiar}</p>}
+            {survey.psico_observacion_estado_familiar && <p className="text-gray-500"><span className="text-gray-400">→</span> {survey.psico_observacion_estado_familiar}</p>}
+            {survey.psico_condicion_vivienda && <p className="text-gray-500"><span className="text-gray-400">Condición vivienda:</span> {survey.psico_condicion_vivienda}</p>}
+            {survey.psico_observacion_condicion_vivienda && <p className="text-gray-500"><span className="text-gray-400">→</span> {survey.psico_observacion_condicion_vivienda}</p>}
+            {survey.psico_fallecimiento_familiares && <p className="text-gray-500"><span className="text-gray-400">Fallecimiento:</span> {survey.psico_fallecimiento_familiares}</p>}
+            {survey.psico_familiares_desaparecidos && <p className="text-gray-500"><span className="text-gray-400">Desaparecidos:</span> {survey.psico_familiares_desaparecidos}</p>}
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
         <h3 className="font-semibold text-gray-700 border-b border-gray-200 pb-2 flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />

@@ -106,6 +106,14 @@ export async function syncSurveys() {
           familiares_desaparecidos: survey.familiares_desaparecidos || null,
           observacion_estado_familiar: survey.observacion_estado_familiar || null,
           observacion_condicion_vivienda: survey.observacion_condicion_vivienda || null,
+          psico_nivel_ansiedad: survey.psico_nivel_ansiedad || null,
+          psico_estado_familiar: survey.psico_estado_familiar || null,
+          psico_condicion_vivienda: survey.psico_condicion_vivienda || null,
+          psico_fallecimiento_familiares: survey.psico_fallecimiento_familiares || null,
+          psico_familiares_desaparecidos: survey.psico_familiares_desaparecidos || null,
+          psico_observacion_estado_familiar: survey.psico_observacion_estado_familiar || null,
+          psico_observacion_condicion_vivienda: survey.psico_observacion_condicion_vivienda || null,
+          psico_completado: survey.psico_completado || false,
           encuestador_id: survey.encuestadorId,
           local_id: String(survey.localId),
         }
@@ -219,6 +227,34 @@ export async function updateFamilyPsychTest(localId, psychData) {
       } else {
         await db.familyMembers.update(localId, { syncStatus: 'synced' })
         await db.surveys.update(fm.surveyLocalId, { syncStatus: 'synced' })
+      }
+    }
+  }
+}
+
+export async function updateSurveyPsychTest(localId, psychData) {
+  await db.surveys.update(localId, {
+    ...psychData,
+    syncStatus: 'pending',
+  })
+
+  if (navigator.onLine) {
+    const survey = await db.surveys.get(localId)
+    if (survey?.remoteId) {
+      const { error } = await supabase.from('encuestas').update({
+        psico_nivel_ansiedad: psychData.psico_nivel_ansiedad || null,
+        psico_estado_familiar: psychData.psico_estado_familiar || null,
+        psico_condicion_vivienda: psychData.psico_condicion_vivienda || null,
+        psico_fallecimiento_familiares: psychData.psico_fallecimiento_familiares || null,
+        psico_familiares_desaparecidos: psychData.psico_familiares_desaparecidos || null,
+        psico_observacion_estado_familiar: psychData.psico_observacion_estado_familiar || null,
+        psico_observacion_condicion_vivienda: psychData.psico_observacion_condicion_vivienda || null,
+        psico_completado: psychData.psico_completado || false,
+      }).eq('id', survey.remoteId)
+      if (error) {
+        console.error('Error syncing survey psych test:', error)
+      } else {
+        await db.surveys.update(localId, { syncStatus: 'synced' })
       }
     }
   }
@@ -360,6 +396,14 @@ export async function fetchRemoteSurveys(encuestadorId) {
         familiares_desaparecidos: remote.familiares_desaparecidos || '',
         observacion_estado_familiar: remote.observacion_estado_familiar || '',
         observacion_condicion_vivienda: remote.observacion_condicion_vivienda || '',
+        psico_nivel_ansiedad: remote.psico_nivel_ansiedad || '',
+        psico_estado_familiar: remote.psico_estado_familiar || '',
+        psico_condicion_vivienda: remote.psico_condicion_vivienda || '',
+        psico_fallecimiento_familiares: remote.psico_fallecimiento_familiares || '',
+        psico_familiares_desaparecidos: remote.psico_familiares_desaparecidos || '',
+        psico_observacion_estado_familiar: remote.psico_observacion_estado_familiar || '',
+        psico_observacion_condicion_vivienda: remote.psico_observacion_condicion_vivienda || '',
+        psico_completado: remote.psico_completado || false,
         encuestadorId: remote.encuestador_id,
         remoteId: remote.id,
         syncStatus: 'synced',
@@ -405,6 +449,14 @@ export async function fetchRemoteSurveys(encuestadorId) {
         familiares_desaparecidos: remote.familiares_desaparecidos || '',
         observacion_estado_familiar: remote.observacion_estado_familiar || '',
         observacion_condicion_vivienda: remote.observacion_condicion_vivienda || '',
+        psico_nivel_ansiedad: remote.psico_nivel_ansiedad || '',
+        psico_estado_familiar: remote.psico_estado_familiar || '',
+        psico_condicion_vivienda: remote.psico_condicion_vivienda || '',
+        psico_fallecimiento_familiares: remote.psico_fallecimiento_familiares || '',
+        psico_familiares_desaparecidos: remote.psico_familiares_desaparecidos || '',
+        psico_observacion_estado_familiar: remote.psico_observacion_estado_familiar || '',
+        psico_observacion_condicion_vivienda: remote.psico_observacion_condicion_vivienda || '',
+        psico_completado: remote.psico_completado || false,
         updatedAt: remote.updated_at,
       })
 
