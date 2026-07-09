@@ -22,13 +22,14 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = async (username, password) => {
-    let usuario = await db.usuarios.get(username)
+    const key = username.toLowerCase()
+    let usuario = await db.usuarios.get(key)
 
     if (!usuario && navigator.onLine) {
-      const { data } = await supabase.from('usuarios').select('*').eq('username', username).single()
+      const { data } = await supabase.from('usuarios').select('*').eq('username', key).single()
       if (data) {
         await db.usuarios.add({
-          username: data.username,
+          username: key,
           password: data.password,
           role: data.role,
           createdBy: data.created_by,
@@ -44,14 +45,14 @@ export function AuthProvider({ children }) {
     const hash = await hashPassword(password)
     if (usuario.password !== hash) throw new Error('Contraseña incorrecta')
 
-    const userData = { username: usuario.username, role: usuario.role }
+    const userData = { username: key, role: usuario.role }
     setUser(userData)
     localStorage.setItem('ayudapp_user', JSON.stringify(userData))
 
     if (navigator.onLine) {
       import('../services/sync').then(({ syncUsuarios, fetchRemoteSurveys, syncSurveys }) => {
         syncUsuarios().catch(() => {})
-        fetchRemoteSurveys(username).catch(() => {})
+        fetchRemoteSurveys(key).catch(() => {})
         syncSurveys().catch(() => {})
       })
     }
@@ -65,12 +66,13 @@ export function AuthProvider({ children }) {
   }
 
   const createUser = async (username, password, role = 'encuestador') => {
-    const existing = await db.usuarios.get(username)
+    const key = username.toLowerCase()
+    const existing = await db.usuarios.get(key)
     if (existing) throw new Error('El usuario ya existe')
 
     const hash = await hashPassword(password)
     await db.usuarios.add({
-      username,
+      username: key,
       password: hash,
       role,
       createdBy: user?.username || null,
@@ -78,12 +80,13 @@ export function AuthProvider({ children }) {
       createdAt: new Date().toISOString(),
     })
 
-    return { username, role }
+    return { username: key, role }
   }
 
   const deleteUser = async (username) => {
-    if (username === 'admin') throw new Error('No se puede eliminar el admin principal')
-    await db.usuarios.delete(username)
+    const key = username.toLowerCase()
+    if (key === 'admin') throw new Error('No se puede eliminar el admin principal')
+    await db.usuarios.delete(key)
   }
 
   const getAllUsers = useCallback(async () => {
@@ -95,10 +98,11 @@ export function AuthProvider({ children }) {
     if (local) return true
 
     if (navigator.onLine) {
-      const { data } = await supabase.from('usuarios').select('*').eq('username', 'admin').single()
+      const { data: rows } = await supabase.from('usuarios').select('*').or('username.eq.admin,username.eq.Admin')
+      const data = rows?.[0]
       if (data) {
         await db.usuarios.add({
-          username: data.username,
+          username: 'admin',
           password: data.password,
           role: data.role,
           createdBy: data.created_by,
