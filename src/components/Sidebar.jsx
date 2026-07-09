@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import SyncStatus from './SyncStatus'
 import { HomeIcon, ChartBarSquareIcon, UsersIcon, InformationCircleIcon, HeartIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 
 const navItems = [
@@ -11,11 +11,10 @@ const navItems = [
   { label: 'Más sobre Ayudapp', path: '/about', icon: InformationCircleIcon, adminOnly: false },
 ]
 
-export default function Sidebar() {
+export default function Sidebar({ open, setOpen }) {
   const { user, isAdmin, logout } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
-  const [open, setOpen] = useState(false)
 
   const handleLogout = async () => {
     await logout()
@@ -80,7 +79,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 px-3 py-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setOpen(!open)}
@@ -97,6 +96,7 @@ export default function Sidebar() {
           <img src="/logo.webp" alt="Logo" className="w-8 h-8 rounded-lg object-cover shadow-sm" />
           <span className="font-bold text-gray-800 text-sm">AyudApp Luxor</span>
         </div>
+        <SyncStatus />
       </div>
 
       {open && (

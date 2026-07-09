@@ -8,7 +8,6 @@ import db from '../lib/db'
 import FamilyMemberForm from './FamilyMemberForm'
 import StateCitySelector from './StateCitySelector'
 import PlaceSelector from './PlaceSelector'
-import { getCurrentPosition, reverseGeocode, extractCity, extractState } from '../services/location'
 
 function normalizarCedula(c) {
   return c.replace(/[VEve-]/g, '').trim()
@@ -95,23 +94,6 @@ export default function SurveyForm() {
       setFamilyMembers((s.familyMembers || []).map((fm) => ({ ...fm, id: Date.now() + Math.random() })))
       setLoadingSurvey(false)
     })
-  }, [editId])
-
-  useEffect(() => {
-    if (!editId && !survey.direccion_estado && !survey.direccion_ciudad) {
-      getCurrentPosition().then(async (pos) => {
-        try {
-          const data = await reverseGeocode(pos.coords.latitude, pos.coords.longitude)
-          if (data?.address) {
-            const ciudad = extractCity(data.address)
-            const estado = extractState(data.address)
-            if (ciudad || estado) {
-              setSurvey((prev) => ({ ...prev, direccion_ciudad: ciudad, direccion_estado: estado }))
-            }
-          }
-        } catch { /* ignore geolocation errors */ }
-      }).catch(() => { /* ignore */ })
-    }
   }, [editId])
 
   const psychQuestions = [

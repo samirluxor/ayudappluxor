@@ -6,8 +6,6 @@ import { useOnlineStatus } from '../hooks/useOnlineStatus'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import db from '../lib/db'
 import SurveyList from './SurveyList'
-import SyncStatus from './SyncStatus'
-
 export default function Dashboard() {
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -71,7 +69,6 @@ export default function Dashboard() {
               {surveys.length} encuesta{surveys.length !== 1 ? 's' : ''} registrada{surveys.length !== 1 ? 's' : ''}
             </p>
           </div>
-          <SyncStatus />
         </div>
         <button
           onClick={() => navigate('/survey/new')}
