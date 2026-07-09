@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { fetchRemoteSurveys, syncSurveys } from '../services/sync'
 import SyncStatus from './SyncStatus'
-import { HomeIcon, ChartBarSquareIcon, UsersIcon, InformationCircleIcon, HeartIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
+import { HomeIcon, ChartBarSquareIcon, UsersIcon, InformationCircleIcon, HeartIcon, ArrowPathIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 
 const navItems = [
   { label: 'Tablero', path: '/tablero', icon: ChartBarSquareIcon, adminOnly: false },
@@ -15,10 +17,25 @@ export default function Sidebar({ open, setOpen }) {
   const { user, isAdmin, logout } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
+  const [syncing, setSyncing] = useState(false)
 
   const handleLogout = async () => {
     await logout()
     navigate('/login')
+  }
+
+  const handleForceSync = async () => {
+    if (syncing || !navigator.onLine) return
+    setSyncing(true)
+    try {
+      await fetchRemoteSurveys(user.username)
+      await syncSurveys()
+      window.location.reload()
+    } catch {
+      /* ignore */
+    } finally {
+      setSyncing(false)
+    }
   }
 
   const isActive = (path) => location.pathname === path
@@ -63,6 +80,14 @@ export default function Sidebar({ open, setOpen }) {
       </nav>
 
       <div className="p-3 border-t border-gray-200 space-y-2">
+        <button
+          onClick={handleForceSync}
+          disabled={syncing || !navigator.onLine}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:bg-sky-100 hover:text-blue-600 transition-all disabled:opacity-40"
+        >
+          <ArrowPathIcon className={`w-5 h-5 ${syncing ? 'animate-spin' : ''}`} />
+          {syncing ? 'Sincronizando...' : 'Forzar sincronización'}
+        </button>
         <p className="text-[11px] text-gray-600 leading-relaxed">
           Hecho con 💛💙❤️ por el departamento de<br />Talento Humano de Supermercados Luxor
         </p>

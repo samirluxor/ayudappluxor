@@ -185,8 +185,8 @@ export default function SurveyForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    if (!survey.cedula || !survey.nombre || !survey.apellido || !survey.genero) {
-      setError('Cédula, nombre, apellido y género son obligatorios')
+    if (!survey.cedula || !survey.nombre || !survey.apellido || !survey.genero || !survey.direccion_estado || !survey.direccion_ciudad || !survey.telefono) {
+      setError('Cédula, nombre, apellido, género, estado, ciudad y teléfono son obligatorios')
       return
     }
 
