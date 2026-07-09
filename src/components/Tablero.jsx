@@ -29,7 +29,8 @@ export default function Tablero() {
   const totalPersonas = totalEncuestados + totalFamiliares
 
   const totalTests = surveys.reduce((s, e) => {
-    let n = e.psico_completado ? 1 : 0
+    const encTestOk = e.psico_completado || (e.nivel_ansiedad && e.estado_familiar && e.condicion_vivienda && e.fallecimiento_familiares && e.familiares_desaparecidos)
+    let n = encTestOk ? 1 : 0
     for (const fm of (e.familyMembers || [])) {
       if (fm.psico_completado) n++
     }
