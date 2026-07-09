@@ -388,6 +388,60 @@ export async function fetchRemoteSurveys(encuestadorId) {
           createdAt: fm.created_at,
         })
       }
+    } else if (existing.syncStatus === 'synced') {
+      await db.surveys.update(existing.localId, {
+        cedula: remote.cedula,
+        nombre: remote.nombre,
+        apellido: remote.apellido,
+        genero: remote.genero || null,
+        fecha_nacimiento: remote.fecha_nacimiento || null,
+        direccion_fiscal: remote.direccion_fiscal,
+        telefono: remote.telefono,
+        nivel_ansiedad: remote.nivel_ansiedad || '',
+        estado_familiar: remote.estado_familiar || '',
+        condicion_vivienda: remote.condicion_vivienda || '',
+        fallecimiento_familiares: remote.fallecimiento_familiares || '',
+        familiares_desaparecidos: remote.familiares_desaparecidos || '',
+        observacion_estado_familiar: remote.observacion_estado_familiar || '',
+        observacion_condicion_vivienda: remote.observacion_condicion_vivienda || '',
+        updatedAt: remote.updated_at,
+      })
+
+      const existingFm = await db.familyMembers.where('surveyLocalId').equals(existing.localId).toArray()
+      const existingFmByCedula = {}
+      for (const ef of existingFm) {
+        existingFmByCedula[ef.cedula] = ef
+      }
+
+      for (const fm of (remote.familiares || [])) {
+        const localFm = existingFmByCedula[fm.cedula]
+        const data = {
+          cedula: fm.cedula,
+          nombre: fm.nombre,
+          apellido: fm.apellido,
+          parentesco: fm.parentesco,
+          sexo: fm.sexo || '',
+          fecha_nacimiento: fm.fecha_nacimiento || '',
+          requiereApoyo: fm.requiere_apoyo || false,
+          psico_nivel_ansiedad: fm.psico_nivel_ansiedad || '',
+          psico_estado_familiar: fm.psico_estado_familiar || '',
+          psico_condicion_vivienda: fm.psico_condicion_vivienda || '',
+          psico_fallecimiento_familiares: fm.psico_fallecimiento_familiares || '',
+          psico_familiares_desaparecidos: fm.psico_familiares_desaparecidos || '',
+          psico_observacion_estado_familiar: fm.psico_observacion_estado_familiar || '',
+          psico_observacion_condicion_vivienda: fm.psico_observacion_condicion_vivienda || '',
+          psico_completado: fm.psico_completado || false,
+          surveyLocalId: existing.localId,
+          syncStatus: 'synced',
+          createdAt: fm.created_at,
+        }
+
+        if (localFm) {
+          await db.familyMembers.update(localFm.localId, data)
+        } else {
+          await db.familyMembers.add(data)
+        }
+      }
     }
   }
 }
