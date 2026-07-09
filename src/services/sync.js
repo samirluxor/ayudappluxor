@@ -106,14 +106,6 @@ export async function syncSurveys() {
           familiares_desaparecidos: survey.familiares_desaparecidos || null,
           observacion_estado_familiar: survey.observacion_estado_familiar || null,
           observacion_condicion_vivienda: survey.observacion_condicion_vivienda || null,
-          psico_nivel_ansiedad: survey.psico_nivel_ansiedad || null,
-          psico_estado_familiar: survey.psico_estado_familiar || null,
-          psico_condicion_vivienda: survey.psico_condicion_vivienda || null,
-          psico_fallecimiento_familiares: survey.psico_fallecimiento_familiares || null,
-          psico_familiares_desaparecidos: survey.psico_familiares_desaparecidos || null,
-          psico_observacion_estado_familiar: survey.psico_observacion_estado_familiar || null,
-          psico_observacion_condicion_vivienda: survey.psico_observacion_condicion_vivienda || null,
-          psico_completado: survey.psico_completado || false,
           encuestador_id: survey.encuestadorId,
           local_id: String(survey.localId),
         }
@@ -241,21 +233,21 @@ export async function updateSurveyPsychTest(localId, psychData) {
   if (navigator.onLine) {
     const survey = await db.surveys.get(localId)
     if (survey?.remoteId) {
-      const { error } = await supabase.from('encuestas').update({
-        psico_nivel_ansiedad: psychData.psico_nivel_ansiedad || null,
-        psico_estado_familiar: psychData.psico_estado_familiar || null,
-        psico_condicion_vivienda: psychData.psico_condicion_vivienda || null,
-        psico_fallecimiento_familiares: psychData.psico_fallecimiento_familiares || null,
-        psico_familiares_desaparecidos: psychData.psico_familiares_desaparecidos || null,
-        psico_observacion_estado_familiar: psychData.psico_observacion_estado_familiar || null,
-        psico_observacion_condicion_vivienda: psychData.psico_observacion_condicion_vivienda || null,
-        psico_completado: psychData.psico_completado || false,
-      }).eq('id', survey.remoteId)
-      if (error) {
-        console.error('Error syncing survey psych test:', error)
-      } else {
-        await db.surveys.update(localId, { syncStatus: 'synced' })
-      }
+      try {
+        const { error } = await supabase.from('encuestas').update({
+          psico_nivel_ansiedad: psychData.psico_nivel_ansiedad || null,
+          psico_estado_familiar: psychData.psico_estado_familiar || null,
+          psico_condicion_vivienda: psychData.psico_condicion_vivienda || null,
+          psico_fallecimiento_familiares: psychData.psico_fallecimiento_familiares || null,
+          psico_familiares_desaparecidos: psychData.psico_familiares_desaparecidos || null,
+          psico_observacion_estado_familiar: psychData.psico_observacion_estado_familiar || null,
+          psico_observacion_condicion_vivienda: psychData.psico_observacion_condicion_vivienda || null,
+          psico_completado: psychData.psico_completado || false,
+        }).eq('id', survey.remoteId)
+        if (!error) {
+          await db.surveys.update(localId, { syncStatus: 'synced' })
+        }
+      } catch { /* column not in Supabase yet, keep local */ }
     }
   }
 }
