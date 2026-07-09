@@ -26,8 +26,8 @@ function PasswordInput({ value, onChange, placeholder, autoComplete }) {
   )
 }
 
-const collageImages = Array.from({ length: 20 }, (_, i) =>
-  `https://picsum.photos/seed/p${i + 1}/400/300`
+const collageImages = Array.from({ length: 30 }, (_, i) =>
+  `https://i.pravatar.cc/400?u=${i + 1}`
 )
 
 export default function Login() {
@@ -53,7 +53,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-sky-100">
-      <div className="absolute inset-0 grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-1 opacity-15 pointer-events-none">
+      <div className="absolute inset-0 grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-1 opacity-15 pointer-events-none">
         {collageImages.map((src, i) => (
           <div
             key={i}
