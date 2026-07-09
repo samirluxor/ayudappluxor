@@ -186,8 +186,8 @@ export default function SurveyForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    if (!survey.cedula || !survey.nombre || !survey.apellido || !survey.genero || !survey.direccion_estado || !survey.direccion_ciudad || !survey.telefono) {
-      setError('Cédula, nombre, apellido, género, estado, ciudad y teléfono son obligatorios')
+    if (!survey.cedula || !survey.nombre || !survey.apellido || !survey.genero || !survey.direccion_estado || !survey.direccion_ciudad || !survey.direccion_fiscal || !survey.telefono) {
+      setError('Cédula, nombre, apellido, género, estado, ciudad, dirección y teléfono son obligatorios')
       return
     }
 
@@ -328,14 +328,14 @@ export default function SurveyForm() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Dirección detallada</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Dirección detallada *</label>
             <input type="text" name="direccion_fiscal" value={survey.direccion_fiscal} onChange={handleChange}
               className="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition"
-              placeholder="Calle, casa/apto (opcional)" />
+              placeholder="Calle, casa/apto" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Teléfono de contacto</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Teléfono de contacto *</label>
             <input type="tel" name="telefono" value={survey.telefono} onChange={handleChange}
               className="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition"
               placeholder="0412-1234567" />
