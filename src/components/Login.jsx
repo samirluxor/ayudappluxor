@@ -1,55 +1,100 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import {
+  HeartIcon,
+  HandRaisedIcon,
+  UsersIcon,
+  UserIcon,
+  FaceSmileIcon,
+  HomeIcon,
+} from '@heroicons/react/24/solid'
 
-function PasswordInput({ value, onChange, placeholder, autoComplete }) {
-  const [show, setShow] = useState(false)
+function WheelchairIcon({ className }) {
   return (
-    <div className="relative">
-      <input
-        type={show ? 'text' : 'password'}
-        value={value}
-        onChange={onChange}
-        className="w-full px-4 py-2.5 pr-10 border border-gray-200 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition"
-        placeholder={placeholder}
-        required
-        autoComplete={autoComplete}
-      />
-      <button
-        type="button"
-        onClick={() => setShow(!show)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-      >
-        {show ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-      </button>
-    </div>
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <circle cx="12" cy="5" r="2" />
+      <path d="M8 12h4l2 8h3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8 18a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+    </svg>
   )
 }
 
-const peoplePhotos = [
-  '1494790108377-be9c29b29330', '1507003211169-0a1dd7228f2d',
-  '1438761681033-6461ffad8d80', '1472099645785-5658abf4ff4e',
-  '1506794778202-cad84cf45f1d', '1524504388940-b1c1722653e1',
-  '1488426862026-3ea34d766590', '1560250097-0b93528c311a',
-  '1544717301-9cdcb1f5940f', '1503919545889-aef636e10ad4',
-  '1516627145497-ae6968895b74', '1524593689594-aae2f26b23ab',
-  '1540569014015-19a7be504e3a', '1552058544-f2b08422138a',
-  '1509967419530-da38b4704bc6', '1517457373958-b7bdd4587205',
-  '1558618666-fcd25c85f82e', '1531746020-d74166554c04',
-  '1517841905240-472988babdf9', '1544005313-94ddf0286df2',
-  '1528892952291-009c663cee22', '1502827906530-20f6a0c0a7b6',
-  '1531123420370-dd29f3b8955a', '1504591956812-f0c9b3c7e6e8',
-  '1519331318064-258f29f6e37c', '1529627145592-dabfe1f1a0a4',
-  '1546457332-eefa50ed27f4', '1554725336-2b1b9b9ba5f7',
-  '1489424731084-a5d8b219a5bb', '1502827906530-20f6a0c0a7b6',
-  '1549472219-2e0c0d4c3b7a', '1559489837-bc1e8f8f7e9a',
-  '1504591956812-f0c9b3c7e6e8', '1546457332-eefa50ed27f4',
-  '1559489837-bc1e8f8f7e9a', '1529627145592-dabfe1f1a0a4',
-  '1528892952291-009c663cee22', '1479936343-716b1fd3d6c8',
+function CrutchesIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path d="M8 4v4a4 4 0 0 0 4 4" strokeLinecap="round" />
+      <path d="M16 4v4a4 4 0 0 1-4 4" strokeLinecap="round" />
+      <path d="M4 20l4-4" strokeLinecap="round" />
+      <path d="M20 20l-4-4" strokeLinecap="round" />
+      <path d="M12 12v8" strokeLinecap="round" />
+      <path d="M8 4h8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function MotherIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <circle cx="10" cy="7" r="3" />
+      <path d="M6 18v-2a4 4 0 0 1 4-4" strokeLinecap="round" />
+      <circle cx="18" cy="13" r="2" />
+      <path d="M18 15v5M16 17h4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function GrandfatherIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <circle cx="10" cy="7" r="3" />
+      <path d="M4 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" strokeLinecap="round" />
+      <path d="M16 8l4-4 4 4M20 4v8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function PetIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <circle cx="9" cy="9" r="2.5" />
+      <circle cx="17" cy="7" r="2.5" />
+      <circle cx="5" cy="16" r="2.5" />
+      <circle cx="19" cy="16" r="2.5" />
+      <path d="M7 19c1.5 2 5 2 6.5 0" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function MedicalIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <rect x="4" y="4" width="16" height="16" rx="3" />
+      <path d="M12 8v8M8 12h8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+const iconTiles = [
+  { icon: HeartIcon, bg: '#ef4444' },
+  { icon: HandRaisedIcon, bg: '#f97316' },
+  { icon: UsersIcon, bg: '#8b5cf6' },
+  { icon: UserIcon, bg: '#06b6d4' },
+  { icon: FaceSmileIcon, bg: '#eab308' },
+  { icon: MotherIcon, bg: '#ec4899' },
+  { icon: GrandfatherIcon, bg: '#14b8a6' },
+  { icon: WheelchairIcon, bg: '#3b82f6' },
+  { icon: CrutchesIcon, bg: '#f59e0b' },
+  { icon: HomeIcon, bg: '#10b981' },
+  { icon: PetIcon, bg: '#a855f7' },
+  { icon: MedicalIcon, bg: '#f43f5e' },
+  { icon: HeartIcon, bg: '#dc2626' },
+  { icon: UsersIcon, bg: '#7c3aed' },
+  { icon: FaceSmileIcon, bg: '#ca8a04' },
+  { icon: WheelchairIcon, bg: '#2563eb' },
 ]
-const collageImages = peoplePhotos.map(
-  id => `https://images.unsplash.com/photo-${id}?w=400&h=400&fit=crop&crop=face`
-)
+
+const allTiles = Array.from({ length: 48 }, (_, i) => iconTiles[i % iconTiles.length])
 
 export default function Login() {
   const { login } = useAuth()
@@ -74,16 +119,18 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-sky-100">
-      <div className="absolute inset-0 grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-0.5 opacity-20 pointer-events-none">
-        {collageImages.map((src, i) => (
+      <div className="absolute inset-0 grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-0.5 pointer-events-none">
+        {allTiles.map((tile, i) => (
           <div
             key={i}
-            className="bg-gray-200 bg-cover bg-center rounded-sm aspect-square"
-            style={{ backgroundImage: `url(${src})` }}
-          />
+            className="flex items-center justify-center rounded-sm aspect-square"
+            style={{ backgroundColor: tile.bg }}
+          >
+            <tile.icon className="w-5 h-5 text-white/45" />
+          </div>
         ))}
       </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-transparent to-white/60 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-white pointer-events-none" />
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
           <img src="/logo.webp" alt="AyudApp Luxor" className="w-20 h-20 mx-auto mb-4 rounded-2xl shadow-lg object-cover" />
