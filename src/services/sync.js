@@ -129,11 +129,12 @@ export async function syncSurveys() {
           await supabase.from('familiares').delete().eq('encuesta_id', survey.remoteId)
         }
 
-        const pendingFamily = await db.familyMembers
-          .where({ surveyLocalId: survey.localId, syncStatus: 'pending' })
+        const allFamily = await db.familyMembers
+          .where('surveyLocalId')
+          .equals(survey.localId)
           .toArray()
 
-        for (const fm of pendingFamily) {
+        for (const fm of allFamily) {
           let fmNombre = fm.nombre
           let fmApellido = fm.apellido
           if (!fmNombre || !fmApellido) {
