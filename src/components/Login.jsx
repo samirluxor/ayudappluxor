@@ -56,12 +56,13 @@ function GrandfatherIcon({ className }) {
 
 function PetIcon({ className }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-      <circle cx="9" cy="9" r="2.5" />
-      <circle cx="17" cy="7" r="2.5" />
-      <circle cx="5" cy="16" r="2.5" />
-      <circle cx="19" cy="16" r="2.5" />
-      <path d="M7 19c1.5 2 5 2 6.5 0" strokeLinecap="round" />
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <ellipse cx="7" cy="12" rx="2.8" ry="3.5" />
+      <ellipse cx="17" cy="12" rx="2.8" ry="3.5" />
+      <ellipse cx="10" cy="6" rx="2.2" ry="3" />
+      <ellipse cx="14" cy="6" rx="2.2" ry="3" />
+      <ellipse cx="12" cy="15" rx="4.5" ry="5.5" />
+      <ellipse cx="12" cy="21" rx="2.5" ry="1.5" />
     </svg>
   )
 }
@@ -150,7 +151,7 @@ export default function Login() {
             className="flex items-center justify-center rounded-sm aspect-square"
             style={{ backgroundColor: tile.bg }}
           >
-            <tile.icon className="w-5 h-5 text-white/45" />
+            <tile.icon className="w-8 h-8 text-white/45" />
           </div>
         ))}
       </div>
