@@ -36,14 +36,6 @@ const psychQuestions = [
   },
 ]
 
-function getAnswerFields(fm) {
-  const fields = {}
-  for (const q of psychQuestions) {
-    fields[q.field] = fm[q.field] || ''
-  }
-  return fields
-}
-
 function isCompletado(fm) {
   return psychQuestions.every((q) => fm[q.field])
 }
@@ -150,7 +142,7 @@ export default function Psicobienestar() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-spin w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
       </div>
     )
   }
@@ -172,7 +164,7 @@ export default function Psicobienestar() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
           <div className="flex gap-1.5">
             {psychQuestions.map((_, i) => (
-              <div key={i} className={`flex-1 h-1.5 rounded-full transition-colors ${i <= psychStep && answers[q.field] ? 'bg-purple-500' : i < psychStep ? 'bg-purple-300' : 'bg-gray-200'}`} />
+              <div key={i} className={`flex-1 h-1.5 rounded-full transition-colors ${i <= psychStep && answers[q.field] ? 'bg-blue-500' : i < psychStep ? 'bg-blue-300' : 'bg-gray-200'}`} />
             ))}
           </div>
 
@@ -181,8 +173,8 @@ export default function Psicobienestar() {
             <p className="text-xs text-gray-500 mb-3 leading-relaxed">{q.question}</p>
             <div className="space-y-2">
               {q.options.map((opt) => (
-                <label key={opt} className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${answers[q.field] === opt ? 'border-purple-400 bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                  <input type="radio" name={q.field} value={opt} checked={answers[q.field] === opt} onChange={() => handleAnswer(q.field, opt)} className="mt-0.5 accent-purple-500" />
+                <label key={opt} className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${answers[q.field] === opt ? 'border-blue-400 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                  <input type="radio" name={q.field} value={opt} checked={answers[q.field] === opt} onChange={() => handleAnswer(q.field, opt)} className="mt-0.5 accent-blue-500" />
                   <span className="text-sm text-gray-700">{opt}</span>
                 </label>
               ))}
@@ -192,7 +184,7 @@ export default function Psicobienestar() {
               <div className="mt-3">
                 <label className="block text-xs font-medium text-gray-500 mb-1">Observación</label>
                 <textarea value={answers.psico_observacion_estado_familiar || ''} onChange={(e) => handleAnswer('psico_observacion_estado_familiar', e.target.value)} rows="2"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-white text-gray-700 text-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none transition resize-none"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-white text-gray-700 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition resize-none"
                   placeholder="Describe la situación..." />
               </div>
             )}
@@ -201,7 +193,7 @@ export default function Psicobienestar() {
               <div className="mt-3">
                 <label className="block text-xs font-medium text-gray-500 mb-1">Observación</label>
                 <textarea value={answers.psico_observacion_condicion_vivienda || ''} onChange={(e) => handleAnswer('psico_observacion_condicion_vivienda', e.target.value)} rows="2"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-white text-gray-700 text-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none transition resize-none"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-white text-gray-700 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition resize-none"
                   placeholder="Describe los daños..." />
               </div>
             )}
@@ -214,12 +206,12 @@ export default function Psicobienestar() {
             </button>
             {psychStep < psychQuestions.length - 1 ? (
               <button type="button" onClick={() => { if (answers[q.field]) setPsychStep(psychStep + 1) }}
-                className="flex-1 py-2 bg-gradient-to-r from-purple-500 to-purple-400 hover:from-purple-600 hover:to-purple-500 disabled:opacity-40 text-white text-sm font-semibold rounded-xl transition-all shadow-md">
+                className="flex-1 py-2 bg-gradient-to-r from-blue-500 to-sky-500 hover:from-blue-600 hover:to-sky-600 disabled:opacity-40 text-white text-sm font-semibold rounded-xl transition-all shadow-md">
                 Siguiente
               </button>
             ) : (
               <button type="button" onClick={saveTest} disabled={saving || !answers[q.field]}
-                className="flex-1 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-all shadow-md">
+                className="flex-1 py-2 bg-gradient-to-r from-blue-500 to-sky-500 hover:from-blue-600 hover:to-sky-600 disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-all shadow-md">
                 {saving ? 'Guardando...' : 'Guardar test'}
               </button>
             )}
@@ -269,7 +261,7 @@ export default function Psicobienestar() {
         </svg>
         <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por nombre, apellido o cédula..."
-          className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl bg-white text-sm text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none transition" />
+          className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl bg-white text-sm text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition" />
       </div>
 
       {filtered.length === 0 && (
