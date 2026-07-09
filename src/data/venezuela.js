@@ -1,0 +1,28 @@
+const estadosYCiudades = {
+  'Amazonas': ['Puerto Ayacucho', 'Maroa', 'San Fernando de Atabapo'],
+  'Anzoátegui': ['Barcelona', 'Puerto La Cruz', 'El Tigre', 'Anaco', 'Lechería', 'Guanta', 'Cantaura', 'Pariaguán', 'Aragua de Barcelona', 'San Tomé', 'Clarines', 'Onoto'],
+  'Apure': ['San Fernando de Apure', 'Achaguas', 'Biruaca', 'Guasdualito', 'Elorza'],
+  'Aragua': ['Maracay', 'La Victoria', 'Turmero', 'Cagua', 'Villa de Cura', 'Palo Negro', 'Santa Rita', 'El Limón', 'Las Tejerías', 'Colonia Tovar'],
+  'Barinas': ['Barinas', 'Socopó', 'Santa Bárbara', 'Ciudad Bolivia', 'Obispos'],
+  'Bolívar': ['Ciudad Bolívar', 'Puerto Ordaz', 'Upata', 'Caicara del Orinoco', 'Ciudad Piar', 'Tumeremo', 'El Callao', 'Santa Elena de Uairén'],
+  'Carabobo': ['Valencia', 'Puerto Cabello', 'Naguanagua', 'San Diego', 'Los Guayos', 'Mariara', 'Guacara', 'Tocuyito', 'Morón', 'Bejuma', 'Montalbán'],
+  'Cojedes': ['San Carlos', 'Tinaquillo', 'Tinaco', 'Las Vegas', 'El Baúl'],
+  'Delta Amacuro': ['Tucupita', 'Pedernales', 'Curiapo'],
+  'Distrito Capital': ['Caracas', 'El Hatillo', 'Chacao', 'Baruta', 'Sucre', 'Libertador'],
+  'Falcón': ['Coro', 'Punto Fijo', 'Puerto Cumarebo', 'Churuguara', 'Dabajuro', 'La Vela de Coro', 'Pueblo Nuevo', 'Urumaco'],
+  'Guárico': ['San Juan de los Morros', 'Calabozo', 'Valle de la Pascua', 'Zaraza', 'Altagracia de Orituco', 'El Sombrero', 'Ortiz', 'Camaguán'],
+  'Lara': ['Barquisimeto', 'Carora', 'El Tocuyo', 'Quíbor', 'Duaca', 'Cabudare', 'Sanare'],
+  'Mérida': ['Mérida', 'El Vigía', 'Tovar', 'Ejido', 'Santa Elena de Arenales', 'Mucuchíes', 'Timotes', 'La Azulita'],
+  'Miranda': ['Los Teques', 'Petare', 'Guarenas', 'Charallave', 'Santa Teresa', 'Caucagüita', 'Ocumare del Tuy', 'San Antonio de los Altos', 'Cúa', 'Río Chico', 'Higuerote'],
+  'Monagas': ['Maturín', 'Punta de Mata', 'Temblador', 'Caripito', 'Caripe', 'Aguasay', 'Quiriquire'],
+  'Nueva Esparta': ['La Asunción', 'Porlamar', 'Pampatar', 'Juan Griego', 'El Valle del Espíritu Santo', 'San Juan Bautista', 'Punta de Piedras'],
+  'Portuguesa': ['Acarigua', 'Guanare', 'Araure', 'Píritu', 'Ospino', 'Villa Bruzual', 'Turén', 'San Rafael de Onoto'],
+  'Sucre': ['Cumaná', 'Carúpano', 'Güiria', 'Río Caribe', 'Yaguaraparo', 'Casanay', 'Cariaco', 'Araya', 'Irapa'],
+  'Táchira': ['San Cristóbal', 'Táriba', 'Rubio', 'La Grita', 'San Antonio del Táchira', 'Colón', 'Ureña', 'Michelena', 'San José de Bolívar'],
+  'Trujillo': ['Trujillo', 'Valera', 'Boconó', 'La Quebrada', 'Monay', 'Pampán', 'Escuque', 'Betijoque', 'Carache'],
+  'La Guaira': ['La Guaira', 'Maiquetía', 'Macuto', 'Catia La Mar', 'Carayaca', 'Naiguatá'],
+  'Yaracuy': ['San Felipe', 'Chivacoa', 'Yaritagua', 'Nirgua', 'Cocorote', 'Urachiche', 'Aroa', 'Sabana de Parra'],
+  'Zulia': ['Maracaibo', 'Cabimas', 'Ciudad Ojeda', 'Machiques', 'Santa Rita', 'San Francisco', 'La Villa del Rosario', 'Caja Seca', 'San Carlos del Zulia', 'Los Puertos de Altagracia', 'Santa Bárbara del Zulia', 'Bachaquero', 'El Moján'],
+}
+
+export default estadosYCiudades

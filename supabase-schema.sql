@@ -60,6 +60,14 @@ CREATE TABLE familiares (
 ALTER TABLE familiares ADD COLUMN IF NOT EXISTS sexo TEXT;
 ALTER TABLE familiares ADD COLUMN IF NOT EXISTS fecha_nacimiento DATE;
 ALTER TABLE familiares ADD COLUMN IF NOT EXISTS requiere_apoyo BOOLEAN DEFAULT false;
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS psico_nivel_ansiedad TEXT;
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS psico_estado_familiar TEXT;
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS psico_condicion_vivienda TEXT;
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS psico_fallecimiento_familiares TEXT;
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS psico_familiares_desaparecidos TEXT;
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS psico_observacion_estado_familiar TEXT;
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS psico_observacion_condicion_vivienda TEXT;
+ALTER TABLE familiares ADD COLUMN IF NOT EXISTS psico_completado BOOLEAN DEFAULT false;
 
 -- Migración segura para columnas nuevas en encuestas
 ALTER TABLE encuestas ADD COLUMN IF NOT EXISTS nivel_ansiedad TEXT;

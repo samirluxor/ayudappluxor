@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { HomeIcon, ChartBarSquareIcon, UsersIcon, InformationCircleIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
+import { HomeIcon, ChartBarSquareIcon, UsersIcon, InformationCircleIcon, HeartIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 
 const navItems = [
-  { label: 'Encuestas', path: '/dashboard', icon: HomeIcon, adminOnly: false },
   { label: 'Tablero', path: '/tablero', icon: ChartBarSquareIcon, adminOnly: false },
+  { label: 'Encuestas', path: '/dashboard', icon: HomeIcon, adminOnly: false },
+  { label: 'Psicobienestar', path: '/psicobienestar', icon: HeartIcon, adminOnly: false },
   { label: 'Usuarios', path: '/users', icon: UsersIcon, adminOnly: true },
   { label: 'Más sobre Ayudapp', path: '/about', icon: InformationCircleIcon, adminOnly: false },
 ]

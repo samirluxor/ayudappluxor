@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getLocalSurvey, deleteSurvey } from '../services/sync'
-import { TrashIcon } from '@heroicons/react/24/outline'
+import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline'
 import ConfirmModal from './ConfirmModal'
 
 export default function SurveyDetail() {
@@ -54,6 +54,13 @@ export default function SurveyDetail() {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Detalle de Encuesta</h2>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(`/survey/edit/${survey.localId}`)}
+            className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <PencilIcon className="w-4 h-4" />
+            Editar
+          </button>
           <button
             onClick={() => setShowDelete(true)}
             className="flex items-center gap-1 text-sm text-red-400 hover:text-red-600 transition-colors"
@@ -122,7 +129,7 @@ export default function SurveyDetail() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
           <h3 className="font-semibold text-gray-700 border-b border-gray-200 pb-2 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-            Evaluación Psicológica
+            Test de Psicobienestar
           </h3>
           <div className="space-y-3">
             <div>
@@ -212,6 +219,18 @@ export default function SurveyDetail() {
                 <p className="mt-2 text-xs text-purple-600 font-medium flex items-center gap-1">
                   <span>🫂</span> Solicita apoyo psicológico
                 </p>
+              )}
+              {fm.psico_completado && (
+                <div className="mt-3 pt-3 border-t border-sky-200 space-y-1.5">
+                  <p className="text-xs font-semibold text-purple-600">Test de Psicobienestar ✓</p>
+                  {fm.psico_nivel_ansiedad && <p className="text-xs text-gray-500"><span className="text-gray-400">Nivel ansiedad:</span> {fm.psico_nivel_ansiedad}</p>}
+                  {fm.psico_estado_familiar && <p className="text-xs text-gray-500"><span className="text-gray-400">Estado familiar:</span> {fm.psico_estado_familiar}</p>}
+                  {fm.psico_observacion_estado_familiar && <p className="text-xs text-gray-500"><span className="text-gray-400">→</span> {fm.psico_observacion_estado_familiar}</p>}
+                  {fm.psico_condicion_vivienda && <p className="text-xs text-gray-500"><span className="text-gray-400">Condición vivienda:</span> {fm.psico_condicion_vivienda}</p>}
+                  {fm.psico_observacion_condicion_vivienda && <p className="text-xs text-gray-500"><span className="text-gray-400">→</span> {fm.psico_observacion_condicion_vivienda}</p>}
+                  {fm.psico_fallecimiento_familiares && <p className="text-xs text-gray-500"><span className="text-gray-400">Fallecimiento:</span> {fm.psico_fallecimiento_familiares}</p>}
+                  {fm.psico_familiares_desaparecidos && <p className="text-xs text-gray-500"><span className="text-gray-400">Desaparecidos:</span> {fm.psico_familiares_desaparecidos}</p>}
+                </div>
               )}
             </div>
           ))}

@@ -9,6 +9,7 @@ import SurveyDetail from './components/SurveyDetail'
 import UserManagement from './components/UserManagement'
 import Tablero from './components/Tablero'
 import About from './components/About'
+import Psicobienestar from './components/Psicobienestar'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -36,22 +37,6 @@ function PublicRoute({ children }) {
   return children
 }
 
-function AppRoutes() {
-  return (
-    <Routes>
-      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-      <Route path="/setup" element={<PublicRoute><AdminSetup /></PublicRoute>} />
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/survey/new" element={<ProtectedRoute><SurveyForm /></ProtectedRoute>} />
-      <Route path="/survey/:id" element={<ProtectedRoute><SurveyDetail /></ProtectedRoute>} />
-      <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
-      <Route path="/tablero" element={<ProtectedRoute><Tablero /></ProtectedRoute>} />
-      <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-    </Routes>
-  )
-}
-
 function RootRedirect() {
   const { user, loading } = useAuth()
   if (loading) {
@@ -75,9 +60,11 @@ export default function App() {
           <Route path="/setup" element={<PublicRoute><AdminSetup /></PublicRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/survey/new" element={<ProtectedRoute><SurveyForm /></ProtectedRoute>} />
+          <Route path="/survey/edit/:id" element={<ProtectedRoute><SurveyForm /></ProtectedRoute>} />
           <Route path="/survey/:id" element={<ProtectedRoute><SurveyDetail /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
           <Route path="/tablero" element={<ProtectedRoute><Tablero /></ProtectedRoute>} />
+          <Route path="/psicobienestar" element={<ProtectedRoute><Psicobienestar /></ProtectedRoute>} />
           <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

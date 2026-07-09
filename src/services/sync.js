@@ -91,7 +91,7 @@ export async function syncSurveys() {
           }
         }
 
-        const { data, error } = await supabase.from('encuestas').insert({
+        const payload = {
           cedula: survey.cedula,
           nombre,
           apellido,
@@ -108,14 +108,26 @@ export async function syncSurveys() {
           observacion_condicion_vivienda: survey.observacion_condicion_vivienda || null,
           encuestador_id: survey.encuestadorId,
           local_id: String(survey.localId),
-        }).select('id').single()
+        }
 
-        if (error) throw error
+        let remoteId = survey.remoteId
+        if (remoteId) {
+          const { error } = await supabase.from('encuestas').update(payload).eq('id', remoteId).select('id').single()
+          if (error) throw error
+        } else {
+          const { data, error } = await supabase.from('encuestas').insert(payload).select('id').single()
+          if (error) throw error
+          remoteId = data.id
+        }
 
         await db.surveys.update(survey.localId, {
           syncStatus: 'synced',
-          remoteId: data.id,
+          remoteId,
         })
+
+        if (survey.remoteId) {
+          await supabase.from('familiares').delete().eq('encuesta_id', survey.remoteId)
+        }
 
         const pendingFamily = await db.familyMembers
           .where({ surveyLocalId: survey.localId, syncStatus: 'pending' })
@@ -134,7 +146,7 @@ export async function syncSurveys() {
           }
 
           const { error: fmError } = await supabase.from('familiares').insert({
-            encuesta_id: data.id,
+            encuesta_id: remoteId,
             cedula: fm.cedula,
             nombre: fmNombre,
             apellido: fmApellido,
@@ -142,6 +154,14 @@ export async function syncSurveys() {
             sexo: fm.sexo || null,
             fecha_nacimiento: fm.fecha_nacimiento || null,
             requiere_apoyo: fm.requiereApoyo || false,
+            psico_nivel_ansiedad: fm.psico_nivel_ansiedad || null,
+            psico_estado_familiar: fm.psico_estado_familiar || null,
+            psico_condicion_vivienda: fm.psico_condicion_vivienda || null,
+            psico_fallecimiento_familiares: fm.psico_fallecimiento_familiares || null,
+            psico_familiares_desaparecidos: fm.psico_familiares_desaparecidos || null,
+            psico_observacion_estado_familiar: fm.psico_observacion_estado_familiar || null,
+            psico_observacion_condicion_vivienda: fm.psico_observacion_condicion_vivienda || null,
+            psico_completado: fm.psico_completado || false,
           })
           if (fmError) throw fmError
           await db.familyMembers.update(fm.localId, { syncStatus: 'synced' })
@@ -159,6 +179,38 @@ export async function syncSurveys() {
   } finally {
     isSyncing = false
   }
+}
+
+export async function updateFamilyPsychTest(localId, psychData) {
+  await db.familyMembers.update(localId, {
+    ...psychData,
+    syncStatus: 'pending',
+  })
+}
+
+export async function updateSurveyLocally(localId, surveyData, familyMembers = []) {
+  await db.surveys.update(localId, {
+    ...surveyData,
+    syncStatus: 'pending',
+    updatedAt: new Date().toISOString(),
+  })
+
+  await db.familyMembers.where('surveyLocalId').equals(localId).delete()
+
+  for (const fm of familyMembers) {
+    await db.familyMembers.add({
+      ...fm,
+      surveyLocalId: localId,
+      syncStatus: 'pending',
+      createdAt: new Date().toISOString(),
+    })
+  }
+
+  if (navigator.onLine) {
+    await syncSurveys()
+  }
+
+  return localId
 }
 
 export async function saveSurveyLocally(surveyData, familyMembers = []) {
@@ -277,6 +329,14 @@ export async function fetchRemoteSurveys(encuestadorId) {
           sexo: fm.sexo || '',
           fecha_nacimiento: fm.fecha_nacimiento || '',
           requiereApoyo: fm.requiere_apoyo || false,
+          psico_nivel_ansiedad: fm.psico_nivel_ansiedad || '',
+          psico_estado_familiar: fm.psico_estado_familiar || '',
+          psico_condicion_vivienda: fm.psico_condicion_vivienda || '',
+          psico_fallecimiento_familiares: fm.psico_fallecimiento_familiares || '',
+          psico_familiares_desaparecidos: fm.psico_familiares_desaparecidos || '',
+          psico_observacion_estado_familiar: fm.psico_observacion_estado_familiar || '',
+          psico_observacion_condicion_vivienda: fm.psico_observacion_condicion_vivienda || '',
+          psico_completado: fm.psico_completado || false,
           surveyLocalId: localId,
           syncStatus: 'synced',
           createdAt: fm.created_at,

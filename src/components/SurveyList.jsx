@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { MagnifyingGlassIcon, ClipboardDocumentListIcon, PhoneIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { useNavigate } from 'react-router-dom'
+import { MagnifyingGlassIcon, ClipboardDocumentListIcon, PhoneIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline'
 import { deleteSurvey } from '../services/sync'
 import ConfirmModal from './ConfirmModal'
 
 export default function SurveyList({ surveys, onView, onDelete }) {
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [deleteTarget, setDeleteTarget] = useState(null)
 
@@ -89,7 +91,14 @@ export default function SurveyList({ surveys, onView, onDelete }) {
                 </div>
               </div>
             </button>
-            <div className="px-4 pb-3 flex justify-end">
+            <div className="px-4 pb-3 flex justify-end gap-3">
+              <button
+                onClick={(e) => { e.stopPropagation(); navigate(`/survey/edit/${survey.localId}`) }}
+                className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <PencilIcon className="w-3.5 h-3.5" />
+                Editar
+              </button>
               <button
                 onClick={(e) => { e.stopPropagation(); setDeleteTarget(survey) }}
                 className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"

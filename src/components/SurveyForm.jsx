@@ -1,11 +1,14 @@
-import { useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useRef, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { buscarCedula } from '../services/cedula'
-import { saveSurveyLocally } from '../services/sync'
+import { saveSurveyLocally, updateSurveyLocally, getLocalSurvey } from '../services/sync'
 import db from '../lib/db'
 import FamilyMemberForm from './FamilyMemberForm'
+import StateCitySelector from './StateCitySelector'
+import PlaceSelector from './PlaceSelector'
+import { getCurrentPosition, reverseGeocode, extractCity, extractState } from '../services/location'
 
 function normalizarCedula(c) {
   return c.replace(/[VEve-]/g, '').trim()
@@ -31,7 +34,9 @@ async function cedulaYaRegistrada(cedula) {
 export default function SurveyForm() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { id: editId } = useParams()
   const cedulaTimer = useRef(null)
+  const [loadingSurvey, setLoadingSurvey] = useState(!!editId)
   const [survey, setSurvey] = useState({
     cedula: '',
     nombre: '',
@@ -39,6 +44,9 @@ export default function SurveyForm() {
     genero: '',
     fecha_nacimiento: '',
     direccion_fiscal: '',
+    direccion_estado: '',
+    direccion_ciudad: '',
+    direccion_sector: '',
     telefono: '',
     nivel_ansiedad: '',
     estado_familiar: '',
@@ -54,6 +62,57 @@ export default function SurveyForm() {
   const [buscando, setBuscando] = useState(false)
   const [duplicado, setDuplicado] = useState('')
   const [psychStep, setPsychStep] = useState(0)
+  const [openSection, setOpenSection] = useState('datos')
+
+  const toggleSection = (section) => {
+    setOpenSection((prev) => (prev === section ? null : section))
+  }
+
+  useEffect(() => {
+    if (!editId) return
+    getLocalSurvey(Number(editId)).then((s) => {
+      if (!s) { setError('Encuesta no encontrada'); setLoadingSurvey(false); return }
+      const parts = (s.direccion_fiscal || '').split(', ').filter(Boolean)
+      setSurvey({
+        cedula: s.cedula || '',
+        nombre: s.nombre || '',
+        apellido: s.apellido || '',
+        genero: s.genero || '',
+        fecha_nacimiento: s.fecha_nacimiento || '',
+        direccion_fiscal: parts.slice(3).join(', ') || '',
+        direccion_estado: s.direccion_estado || parts[0] || '',
+        direccion_ciudad: s.direccion_ciudad || parts[1] || '',
+        direccion_sector: s.direccion_sector || parts[2] || '',
+        telefono: s.telefono || '',
+        nivel_ansiedad: s.nivel_ansiedad || '',
+        estado_familiar: s.estado_familiar || '',
+        condicion_vivienda: s.condicion_vivienda || '',
+        fallecimiento_familiares: s.fallecimiento_familiares || '',
+        familiares_desaparecidos: s.familiares_desaparecidos || '',
+        observacion_estado_familiar: s.observacion_estado_familiar || '',
+        observacion_condicion_vivienda: s.observacion_condicion_vivienda || '',
+      })
+      setFamilyMembers((s.familyMembers || []).map((fm) => ({ ...fm, id: Date.now() + Math.random() })))
+      setLoadingSurvey(false)
+    })
+  }, [editId])
+
+  useEffect(() => {
+    if (!editId && !survey.direccion_estado && !survey.direccion_ciudad) {
+      getCurrentPosition().then(async (pos) => {
+        try {
+          const data = await reverseGeocode(pos.coords.latitude, pos.coords.longitude)
+          if (data?.address) {
+            const ciudad = extractCity(data.address)
+            const estado = extractState(data.address)
+            if (ciudad || estado) {
+              setSurvey((prev) => ({ ...prev, direccion_ciudad: ciudad, direccion_estado: estado }))
+            }
+          }
+        } catch { /* ignore geolocation errors */ }
+      }).catch(() => { /* ignore */ })
+    }
+  }, [editId])
 
   const psychQuestions = [
     {
@@ -89,7 +148,17 @@ export default function SurveyForm() {
   ]
 
   const handleChange = (e) => {
-    setSurvey({ ...survey, [e.target.name]: e.target.value })
+    setSurvey((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const handleAddressSelect = (address) => {
+    const ciudad = extractCity(address)
+    const estado = extractState(address)
+    setSurvey((prev) => ({
+      ...prev,
+      direccion_ciudad: ciudad || prev.direccion_ciudad,
+      direccion_estado: estado || prev.direccion_estado,
+    }))
   }
 
   const buscarAuto = (cedula) => {
@@ -139,18 +208,27 @@ export default function SurveyForm() {
       return
     }
 
-    const dupe = await cedulaYaRegistrada(survey.cedula)
-    if (dupe) {
-      setError('Esta cédula ya se encuentra registrada en otra encuesta')
-      return
+    if (!editId) {
+      const dupe = await cedulaYaRegistrada(survey.cedula)
+      if (dupe) {
+        setError('Esta cédula ya se encuentra registrada en otra encuesta')
+        return
+      }
     }
 
     setSaving(true)
     try {
-      await saveSurveyLocally(
-        { ...survey, encuestadorId: user.username },
-        familyMembers.map(({ id, ...rest }) => rest)
-      )
+      const estado = survey.direccion_estado?.trim() || ''
+      const ciudad = survey.direccion_ciudad?.trim() || ''
+      const sector = survey.direccion_sector?.trim() || ''
+      const detalle = survey.direccion_fiscal?.trim() || ''
+      const fullAddress = [estado, ciudad, sector, detalle].filter(Boolean).join(', ')
+      const payload = { ...survey, direccion_fiscal: fullAddress, encuestadorId: user.username }
+      if (editId) {
+        await updateSurveyLocally(Number(editId), payload, familyMembers.map(({ id, ...rest }) => rest))
+      } else {
+        await saveSurveyLocally(payload, familyMembers.map(({ id, ...rest }) => rest))
+      }
       navigate('/dashboard')
     } catch {
       setError('Error al guardar la encuesta')
@@ -163,19 +241,29 @@ export default function SurveyForm() {
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Nueva Encuesta</h2>
-          <p className="text-gray-500 text-sm">Registro de persona afectada</p>
+          <h2 className="text-2xl font-bold text-gray-800">{editId ? 'Editar Encuesta' : 'Nueva Encuesta'}</h2>
+          <p className="text-gray-500 text-sm">{editId ? 'Modificar datos de la persona afectada' : 'Registro de persona afectada'}</p>
         </div>
         <button onClick={() => navigate('/dashboard')} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">← Volver</button>
       </div>
 
+      {loadingSurvey ? (
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full" />
+        </div>
+      ) : (
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
-          <h3 className="font-semibold text-gray-700 border-b border-gray-200 pb-2 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-            Datos del encuestado
-          </h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
+          <button type="button" onClick={() => toggleSection('datos')} className="w-full flex items-center justify-between p-6">
+            <h3 className="font-semibold text-gray-700 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+              Datos del encuestado
+            </h3>
+            <svg className={`w-5 h-5 text-gray-400 transition-transform ${openSection === 'datos' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" /></svg>
+          </button>
 
+          {openSection === 'datos' && (
+          <div className="px-6 pb-6 space-y-4">
           {error && <div className="bg-pastel-red text-red-600 text-sm p-3 rounded-lg">{error}</div>}
 
           <div className="relative">
@@ -238,11 +326,28 @@ export default function SurveyForm() {
             </div>
           </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <StateCitySelector
+              estado={survey.direccion_estado}
+              ciudad={survey.direccion_ciudad}
+              onEstadoChange={handleChange}
+              onCiudadChange={handleChange}
+            />
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Sector / Urbanización</label>
+              <PlaceSelector
+                estado={survey.direccion_estado}
+                ciudad={survey.direccion_ciudad}
+                value={survey.direccion_sector}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Dirección fiscal</label>
-            <textarea name="direccion_fiscal" value={survey.direccion_fiscal} onChange={handleChange} rows="2"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition resize-none"
-              placeholder="Dirección completa" />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Dirección detallada</label>
+            <input type="text" name="direccion_fiscal" value={survey.direccion_fiscal} onChange={handleChange}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition"
+              placeholder="Calle, casa/apto (opcional)" />
           </div>
 
           <div>
@@ -251,13 +356,22 @@ export default function SurveyForm() {
               className="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition"
               placeholder="0412-1234567" />
           </div>
+          </div>
+          )}
+
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
-          <h3 className="font-semibold text-gray-700 border-b border-gray-200 pb-2 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-            Evaluación Psicológica
-          </h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
+          <button type="button" onClick={() => toggleSection('psicobienestar')} className="w-full flex items-center justify-between p-6">
+            <h3 className="font-semibold text-gray-700 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+              Test de Psicobienestar
+            </h3>
+            <svg className={`w-5 h-5 text-gray-400 transition-transform ${openSection === 'psicobienestar' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" /></svg>
+          </button>
+
+          {openSection === 'psicobienestar' && (
+          <div className="px-6 pb-6 space-y-4">
 
           <div className="flex gap-1.5">
             {psychQuestions.map((_, i) => (
@@ -314,13 +428,22 @@ export default function SurveyForm() {
               </div>
             </div>
           ))}
+          </div>
+          )}
+
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
-          <h3 className="font-semibold text-gray-700 border-b border-gray-200 pb-2 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-            Familiares
-          </h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
+          <button type="button" onClick={() => toggleSection('familiares')} className="w-full flex items-center justify-between p-6">
+            <h3 className="font-semibold text-gray-700 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+              Familiares
+            </h3>
+            <svg className={`w-5 h-5 text-gray-400 transition-transform ${openSection === 'familiares' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" /></svg>
+          </button>
+
+          {openSection === 'familiares' && (
+          <div className="px-6 pb-6 space-y-4">
 
           {familyMembers.length > 0 && (
             <div className="space-y-2">
@@ -349,6 +472,9 @@ export default function SurveyForm() {
           )}
 
           <FamilyMemberForm onAdd={addFamilyMember} existingCedulas={familyMembers.map(f => f.cedula)} />
+          </div>
+          )}
+
         </div>
 
         <div className="flex gap-3">
@@ -362,6 +488,7 @@ export default function SurveyForm() {
           </button>
         </div>
       </form>
+      )}
     </div>
   )
 }
