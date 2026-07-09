@@ -218,6 +218,7 @@ export async function updateFamilyPsychTest(localId, psychData) {
         console.error('Error syncing family psych test:', error)
       } else {
         await db.familyMembers.update(localId, { syncStatus: 'synced' })
+        await db.surveys.update(fm.surveyLocalId, { syncStatus: 'synced' })
       }
     }
   }
