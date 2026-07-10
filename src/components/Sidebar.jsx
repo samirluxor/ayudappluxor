@@ -44,9 +44,8 @@ export default function Sidebar({ open, setOpen }) {
     <div className="flex flex-col h-full">
       <div className="p-5 border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <img src="/logo.webp" alt="Logo" className="w-9 h-9 rounded-xl object-cover shadow-md shrink-0" />
+          <img src="/logo.webp" alt="MANOS QUE UNEN" className="w-10 h-10 rounded-xl object-cover shadow-md shrink-0" />
           <div className="min-w-0">
-            <p className="font-bold text-gray-800 text-sm truncate">MANOS QUE UNEN</p>
             <div className="flex items-center gap-1.5">
               <span className="text-xs text-gray-400 truncate">@{user?.username}</span>
               {isAdmin && (
@@ -118,8 +117,7 @@ export default function Sidebar({ open, setOpen }) {
               )}
             </svg>
           </button>
-          <img src="/logo.webp" alt="Logo" className="w-8 h-8 rounded-lg object-cover shadow-sm" />
-          <span className="font-bold text-gray-800 text-sm">MANOS QUE UNEN</span>
+          <img src="/logo.webp" alt="MANOS QUE UNEN" className="w-8 h-8 rounded-lg object-cover shadow-sm" />
         </div>
         <SyncStatus />
       </div>
