@@ -98,7 +98,7 @@ export default function About() {
             El 24 de junio de 2026, un devastador terremoto sacudió Venezuela, dejando a su paso miles de familias 
             damnificadas, pérdidas humanas y una profunda huella en las comunidades más vulnerables del país. 
             Ante esta emergencia nacional, <strong>Supermercados Luxor</strong>, comprometido con el bienestar 
-            del pueblo venezolano, ha puesto en marcha la <strong>MANOS QUE UNEN</strong> como una herramienta 
+            del pueblo venezolano, ha puesto en marcha el proyecto <strong>MANOS QUE UNEN</strong> como una herramienta 
             tecnológica para el censo y la recolección de datos de las personas afectadas.
           </p>
           <p className="text-gray-600 leading-relaxed">
