@@ -42,18 +42,11 @@ export default function Sidebar({ open, setOpen }) {
 
   const menu = (
     <div className="flex flex-col h-full">
-      <div className="p-5 border-b border-gray-200">
-        <div className="flex items-center gap-3">
-          <img src="/logo.webp" alt="MANOS QUE UNEN" className="w-auto h-10 rounded-xl object-contain shadow-md shrink-0" />
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-gray-400 truncate">@{user?.username}</span>
-              {isAdmin && (
-                <span className="text-[10px] px-1.5 py-0.5 bg-sky-100 text-blue-600 rounded-full font-medium">Admin</span>
-              )}
-            </div>
-          </div>
-        </div>
+      <div className="p-5 border-b border-gray-200 text-center">
+        <img src="/logo.webp" alt="MANOS QUE UNEN" className="max-w-[140px] mx-auto mb-2 object-contain" />
+        {(user?.nombre || user?.apellido) && (
+          <p className="text-sm font-medium text-gray-800 truncate">{user.nombre} {user.apellido}</p>
+        )}
       </div>
 
       <nav className="flex-1 p-3 space-y-1">

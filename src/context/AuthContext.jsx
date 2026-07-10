@@ -32,6 +32,8 @@ export function AuthProvider({ children }) {
           username: key,
           password: data.password,
           role: data.role,
+          nombre: data.nombre || '',
+          apellido: data.apellido || '',
           createdBy: data.created_by,
           syncStatus: 'synced',
           createdAt: data.created_at,
@@ -45,7 +47,7 @@ export function AuthProvider({ children }) {
     const hash = await hashPassword(password)
     if (usuario.password !== hash) throw new Error('Contraseña incorrecta')
 
-    const userData = { username: key, role: usuario.role }
+    const userData = { username: key, role: usuario.role, nombre: usuario.nombre || '', apellido: usuario.apellido || '' }
     setUser(userData)
     localStorage.setItem('ayudapp_user', JSON.stringify(userData))
 
