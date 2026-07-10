@@ -4,6 +4,7 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import {
   Heart, HandHelping, Users, User, SmilePlus, Baby,
   Accessibility, Stethoscope, House, PawPrint, Cross,
+  HandHeart, Sprout,
 } from 'lucide-react'
 
 function PasswordInput({ value, onChange, placeholder, autoComplete }) {
@@ -47,9 +48,11 @@ const iconTiles = [
   { icon: Users, bg: '#7c3aed' },
   { icon: SmilePlus, bg: '#ca8a04' },
   { icon: Accessibility, bg: '#2563eb' },
+  { icon: HandHeart, bg: '#db2777' },
+  { icon: Sprout, bg: '#65a30d' },
 ]
 
-const allTiles = Array.from({ length: 48 }, (_, i) => iconTiles[i % iconTiles.length])
+const allTiles = Array.from({ length: 90 }, (_, i) => iconTiles[i % iconTiles.length])
 
 export default function Login() {
   const { login } = useAuth()
