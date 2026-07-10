@@ -147,8 +147,8 @@ export default function Login() {
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
-        <p className="text-xs text-gray-600 text-center mt-6 leading-relaxed">
-          Hecho con 💛💙❤️ por el departamento de<br />Talento Humano
+        <p className="text-sm text-gray-600 text-center mt-4">
+          Hecho con 💛💙❤️ por el departamento de Talento Humano
         </p>
       </div>
     </div>
