@@ -88,9 +88,9 @@ export default function Login() {
       <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-white pointer-events-none" />
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <img src="/logo.webp" alt="AyudApp Luxor" className="w-20 h-20 mx-auto mb-4 rounded-2xl shadow-lg object-cover" />
-          <h1 className="text-3xl font-bold text-gray-800">AyudApp Luxor</h1>
-          <p className="text-gray-500 mt-1">Censo y encuestas</p>
+          <img src="/logo.webp" alt="Ayuda+" className="w-20 h-20 mx-auto mb-4 rounded-2xl shadow-lg object-cover" />
+          <h1 className="text-3xl font-bold text-gray-800">Ayuda+</h1>
+          <p className="text-gray-500 mt-1">Una iniciativa de Supermercados Luxor</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-6 space-y-4">
@@ -148,7 +148,7 @@ export default function Login() {
           </button>
         </form>
         <p className="text-xs text-gray-600 text-center mt-6 leading-relaxed">
-          Hecho con 💛💙❤️ por el departamento de<br />Talento Humano de Supermercados Luxor
+          Hecho con 💛💙❤️ por el departamento de<br />Talento Humano
         </p>
       </div>
     </div>
