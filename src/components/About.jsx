@@ -82,8 +82,8 @@ export default function About() {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div className="text-center">
-        <img src="/logo.webp" alt="Somos Luxor" className="w-24 h-24 mx-auto mb-4 rounded-2xl shadow-lg object-cover" />
-        <h2 className="text-3xl font-bold text-gray-800">Somos Luxor</h2>
+        <img src="/logo.webp" alt="SOMOS LUXOR" className="w-24 h-24 mx-auto mb-4 rounded-2xl shadow-lg object-cover" />
+        <h2 className="text-3xl font-bold text-gray-800">SOMOS LUXOR</h2>
         <p className="text-gray-500 mt-2">Censo y encuestas para la reconstrucción</p>
       </div>
 
@@ -96,7 +96,7 @@ export default function About() {
           El 24 de junio de 2026, un devastador terremoto sacudió Venezuela, dejando a su paso miles de familias 
           damnificadas, pérdidas humanas y una profunda huella en las comunidades más vulnerables del país. 
           Ante esta emergencia nacional, <strong>Supermercados Luxor</strong>, comprometido con el bienestar 
-          del pueblo venezolano, ha puesto en marcha la <strong>Somos Luxor</strong> como una herramienta 
+          del pueblo venezolano, ha puesto en marcha la <strong>SOMOS LUXOR</strong> como una herramienta 
           tecnológica para el censo y la recolección de datos de las personas afectadas.
         </p>
         <p className="text-gray-600 leading-relaxed">
@@ -119,7 +119,7 @@ export default function About() {
           las zonas más afectadas por el terremoto.
         </p>
         <p className="text-gray-600 leading-relaxed">
-          La <strong>Somos Luxor</strong> es parte de este esfuerzo: una plataforma gratuita, de código 
+          La <strong>SOMOS LUXOR</strong> es parte de este esfuerzo: una plataforma gratuita, de código 
           abierto, diseñada para que organizaciones sociales, líderes comunitarios y voluntarios puedan 
           censar a las familias damnificadas de manera organizada y transparente. Creemos en la 
           solidaridad como motor de cambio y en la tecnología como aliada para llegar más lejos.
@@ -137,7 +137,7 @@ export default function About() {
           Pero en medio de la adversidad, la solidaridad del pueblo venezolano brilla con fuerza.
         </p>
         <p className="text-gray-600 leading-relaxed">
-          Cada encuesta registrada en Somos Luxor representa una familia que necesita ser escuchada 
+          Cada encuesta registrada en SOMOS LUXOR representa una familia que necesita ser escuchada 
           y atendida. Cada dato recolectado es un paso hacia una distribución más justa y eficiente de 
           la ayuda. Invitamos a todos los voluntarios, organizaciones y ciudadanos de bien a sumarse a 
           esta causa. <strong>Juntos podemos reconstruir Venezuela.</strong>
@@ -251,7 +251,7 @@ export default function About() {
       </div>
 
       <p className="text-center text-sm text-gray-400 pb-8">
-        Somos Luxor &copy; {new Date().getFullYear()} &mdash; Una iniciativa de Supermercados Luxor
+        SOMOS LUXOR &copy; {new Date().getFullYear()} &mdash; Una iniciativa de Supermercados Luxor
       </p>
     </div>
   )
