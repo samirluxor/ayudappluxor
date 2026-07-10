@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
 import { onSyncStatusChange, syncSurveys } from '../services/sync'
 import db from '../lib/db'
@@ -7,11 +7,22 @@ export default function SyncStatus() {
   const isOnline = useOnlineStatus()
   const [syncStatus, setSyncStatus] = useState('idle')
   const [pendingCount, setPendingCount] = useState(0)
+  const [lastSync, setLastSync] = useState(localStorage.getItem('lastSync') || '')
+  const prevSyncStatus = useRef('idle')
 
   useEffect(() => {
     const unsub = onSyncStatusChange(setSyncStatus)
     return unsub
   }, [])
+
+  useEffect(() => {
+    if (prevSyncStatus.current === 'syncing' && syncStatus === 'idle') {
+      const now = new Date().toLocaleString('es-ES')
+      localStorage.setItem('lastSync', now)
+      setLastSync(now)
+    }
+    prevSyncStatus.current = syncStatus
+  }, [syncStatus])
 
   useEffect(() => {
     async function countPending() {
@@ -25,6 +36,9 @@ export default function SyncStatus() {
 
   const handleSync = async () => {
     await syncSurveys()
+    const now = new Date().toLocaleString('es-ES')
+    localStorage.setItem('lastSync', now)
+    setLastSync(now)
   }
 
   if (!isOnline) {
@@ -54,6 +68,7 @@ export default function SyncStatus() {
       <div className="flex items-center gap-2 text-sm text-emerald-600 bg-pastel-blue px-3 py-1.5 rounded-lg">
         <span className="w-2 h-2 rounded-full bg-emerald-500" />
         Conectado
+        {lastSync && <span className="text-gray-400 font-normal">· {lastSync}</span>}
       </div>
       {pendingCount > 0 && (
         <button
