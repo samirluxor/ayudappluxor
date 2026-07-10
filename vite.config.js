@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon-192.webp', 'icon-512.webp'],
       manifest: {
-        name: 'SOMOS LUXOR',
-        short_name: 'SOMOS LUXOR',
+        name: 'MANOS QUE UNEN',
+        short_name: 'MANOS QUE UNEN',
         description: 'Censo y encuestas para la reconstrucción — Una iniciativa de Supermercados Luxor',
         theme_color: '#0f172a',
         background_color: '#f1f5f9',

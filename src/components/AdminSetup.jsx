@@ -86,8 +86,8 @@ export default function AdminSetup() {
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-blue-50 via-white to-sky-100">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <img src="/logo.webp" alt="SOMOS LUXOR" className="w-20 h-20 mx-auto mb-4 rounded-2xl shadow-lg object-cover" />
-          <h1 className="text-3xl font-bold text-gray-800">SOMOS LUXOR</h1>
+          <img src="/logo.webp" alt="MANOS QUE UNEN" className="w-20 h-20 mx-auto mb-4 rounded-2xl shadow-lg object-cover" />
+          <h1 className="text-3xl font-bold text-gray-800">MANOS QUE UNEN</h1>
           <p className="text-gray-500 mt-1">Configuración inicial</p>
         </div>
 
