@@ -45,7 +45,7 @@ export default function Sidebar({ open, setOpen }) {
       <div className="p-5 border-b border-gray-200 text-center">
         <img src="/logo.webp" alt="MANOS QUE UNEN" className="max-w-[140px] mx-auto mb-2 object-contain" />
         {(user?.nombre || user?.apellido) && (
-          <p className="text-xs text-gray-500 truncate">{user.nombre} {user.apellido}</p>
+          <p className="text-[11px] text-gray-400 truncate">{user.nombre?.split(' ')[0]} {user.apellido?.split(' ')[0]}</p>
         )}
       </div>
 
