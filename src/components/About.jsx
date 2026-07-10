@@ -79,6 +79,84 @@ function calcExample() {
 
 export default function About() {
   const [docOpen, setDocOpen] = useState(false)
+  const [openSections, setOpenSections] = useState({})
+
+  function toggleSection(key) {
+    setOpenSections(prev => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  const sections = [
+    {
+      key: 'iniciativa',
+      icon: GlobeAltIcon,
+      title: 'Nuestra iniciativa',
+      bg: 'bg-white',
+      border: 'border-gray-200',
+      content: (
+        <>
+          <p className="text-gray-600 leading-relaxed">
+            El 24 de junio de 2026, un devastador terremoto sacudió Venezuela, dejando a su paso miles de familias 
+            damnificadas, pérdidas humanas y una profunda huella en las comunidades más vulnerables del país. 
+            Ante esta emergencia nacional, <strong>Supermercados Luxor</strong>, comprometido con el bienestar 
+            del pueblo venezolano, ha puesto en marcha la <strong>SOMOS LUXOR</strong> como una herramienta 
+            tecnológica para el censo y la recolección de datos de las personas afectadas.
+          </p>
+          <p className="text-gray-600 leading-relaxed">
+            Esta aplicación permite a los encuestadores registrar de manera rápida y eficiente la información 
+            de los damnificados —incluso sin conexión a internet—, incluyendo datos personales, composición 
+            familiar y necesidades básicas. Toda la información se sincroniza automáticamente cuando hay 
+            conexión, facilitando la toma de decisiones y la distribución oportuna de la ayuda humanitaria.
+          </p>
+        </>
+      ),
+    },
+    {
+      key: 'compromiso',
+      icon: BuildingStorefrontIcon,
+      title: 'Compromiso de Supermercados Luxor',
+      bg: 'bg-white',
+      border: 'border-gray-200',
+      content: (
+        <>
+          <p className="text-gray-600 leading-relaxed">
+            En <strong>Supermercados Luxor</strong> creemos que la empresa privada tiene un rol fundamental 
+            en la reconstrucción del tejido social de Venezuela. Por eso, desde el primer momento nos 
+            movilizamos para llevar alimentos, agua potable, medicinas y artículos de primera necesidad a 
+            las zonas más afectadas por el terremoto.
+          </p>
+          <p className="text-gray-600 leading-relaxed">
+            La <strong>SOMOS LUXOR</strong> es parte de este esfuerzo: una plataforma gratuita, de código 
+            abierto, diseñada para que organizaciones sociales, líderes comunitarios y voluntarios puedan 
+            censar a las familias damnificadas de manera organizada y transparente. Creemos en la 
+            solidaridad como motor de cambio y en la tecnología como aliada para llegar más lejos.
+          </p>
+        </>
+      ),
+    },
+    {
+      key: 'solidaridad',
+      icon: HeartIcon,
+      title: 'Solidaridad con el pueblo venezolano',
+      bg: 'bg-sky-50',
+      border: 'border-sky-200',
+      content: (
+        <>
+          <p className="text-gray-600 leading-relaxed">
+            Venezuela ha enfrentado una de las peores tragedias naturales de su historia. Miles de familias 
+            lo han perdido todo: sus hogares, sus pertenencias y, en muchos casos, a sus seres queridos. 
+            Pero en medio de la adversidad, la solidaridad del pueblo venezolano brilla con fuerza.
+          </p>
+          <p className="text-gray-600 leading-relaxed">
+            Cada encuesta registrada en SOMOS LUXOR representa una familia que necesita ser escuchada 
+            y atendida. Cada dato recolectado es un paso hacia una distribución más justa y eficiente de 
+            la ayuda. Invitamos a todos los voluntarios, organizaciones y ciudadanos de bien a sumarse a 
+            esta causa. <strong>Juntos podemos reconstruir Venezuela.</strong>
+          </p>
+        </>
+      ),
+    },
+  ]
+
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div className="text-center">
@@ -87,63 +165,30 @@ export default function About() {
         <p className="text-gray-500 mt-2">Censo y encuestas para la reconstrucción</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
-        <h3 className="font-semibold text-gray-700 flex items-center gap-2 text-lg">
-          <GlobeAltIcon className="w-5 h-5 text-blue-500" />
-          Nuestra iniciativa
-        </h3>
-        <p className="text-gray-600 leading-relaxed">
-          El 24 de junio de 2026, un devastador terremoto sacudió Venezuela, dejando a su paso miles de familias 
-          damnificadas, pérdidas humanas y una profunda huella en las comunidades más vulnerables del país. 
-          Ante esta emergencia nacional, <strong>Supermercados Luxor</strong>, comprometido con el bienestar 
-          del pueblo venezolano, ha puesto en marcha la <strong>SOMOS LUXOR</strong> como una herramienta 
-          tecnológica para el censo y la recolección de datos de las personas afectadas.
-        </p>
-        <p className="text-gray-600 leading-relaxed">
-          Esta aplicación permite a los encuestadores registrar de manera rápida y eficiente la información 
-          de los damnificados —incluso sin conexión a internet—, incluyendo datos personales, composición 
-          familiar y necesidades básicas. Toda la información se sincroniza automáticamente cuando hay 
-          conexión, facilitando la toma de decisiones y la distribución oportuna de la ayuda humanitaria.
-        </p>
-      </div>
-
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
-        <h3 className="font-semibold text-gray-700 flex items-center gap-2 text-lg">
-          <BuildingStorefrontIcon className="w-5 h-5 text-blue-500" />
-          Compromiso de Supermercados Luxor
-        </h3>
-        <p className="text-gray-600 leading-relaxed">
-          En <strong>Supermercados Luxor</strong> creemos que la empresa privada tiene un rol fundamental 
-          en la reconstrucción del tejido social de Venezuela. Por eso, desde el primer momento nos 
-          movilizamos para llevar alimentos, agua potable, medicinas y artículos de primera necesidad a 
-          las zonas más afectadas por el terremoto.
-        </p>
-        <p className="text-gray-600 leading-relaxed">
-          La <strong>SOMOS LUXOR</strong> es parte de este esfuerzo: una plataforma gratuita, de código 
-          abierto, diseñada para que organizaciones sociales, líderes comunitarios y voluntarios puedan 
-          censar a las familias damnificadas de manera organizada y transparente. Creemos en la 
-          solidaridad como motor de cambio y en la tecnología como aliada para llegar más lejos.
-        </p>
-      </div>
-
-      <div className="bg-sky-50 rounded-2xl border border-sky-200 p-6 space-y-4">
-        <h3 className="font-semibold text-gray-700 flex items-center gap-2 text-lg">
-          <HeartIcon className="w-5 h-5 text-red-400" />
-          Solidaridad con el pueblo venezolano
-        </h3>
-        <p className="text-gray-600 leading-relaxed">
-          Venezuela ha enfrentado una de las peores tragedias naturales de su historia. Miles de familias 
-          lo han perdido todo: sus hogares, sus pertenencias y, en muchos casos, a sus seres queridos. 
-          Pero en medio de la adversidad, la solidaridad del pueblo venezolano brilla con fuerza.
-        </p>
-        <p className="text-gray-600 leading-relaxed">
-          Cada encuesta registrada en SOMOS LUXOR representa una familia que necesita ser escuchada 
-          y atendida. Cada dato recolectado es un paso hacia una distribución más justa y eficiente de 
-          la ayuda. Invitamos a todos los voluntarios, organizaciones y ciudadanos de bien a sumarse a 
-          esta causa. <strong>Juntos podemos reconstruir Venezuela.</strong>
-        </p>
-      </div>
-
+      {sections.map((sec) => (
+        <div key={sec.key} className={`${sec.bg} rounded-2xl shadow-sm border ${sec.border} overflow-hidden`}>
+          <button
+            onClick={() => toggleSection(sec.key)}
+            className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors"
+          >
+            <h3 className="font-semibold text-gray-700 flex items-center gap-2 text-lg">
+              <sec.icon className="w-5 h-5 text-blue-500" />
+              {sec.title}
+            </h3>
+            <svg
+              className={`w-5 h-5 text-gray-400 transition-transform ${openSections[sec.key] ? 'rotate-180' : ''}`}
+              fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          {openSections[sec.key] && (
+            <div className="px-5 pb-6 space-y-4 border-t border-gray-100 pt-4">
+              {sec.content}
+            </div>
+          )}
+        </div>
+      ))}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         <button onClick={() => setDocOpen(!docOpen)}
           className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors">
