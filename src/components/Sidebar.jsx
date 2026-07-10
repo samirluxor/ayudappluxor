@@ -44,7 +44,7 @@ export default function Sidebar({ open, setOpen }) {
     <div className="flex flex-col h-full">
       <div className="p-5 border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <img src="/logo.webp" alt="MANOS QUE UNEN" className="w-10 h-10 rounded-xl object-cover shadow-md shrink-0" />
+          <img src="/logo.webp" alt="MANOS QUE UNEN" className="w-auto h-10 rounded-xl object-contain shadow-md shrink-0" />
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="text-xs text-gray-400 truncate">@{user?.username}</span>
@@ -117,7 +117,7 @@ export default function Sidebar({ open, setOpen }) {
               )}
             </svg>
           </button>
-          <img src="/logo.webp" alt="MANOS QUE UNEN" className="w-8 h-8 rounded-lg object-cover shadow-sm" />
+          <img src="/logo.webp" alt="MANOS QUE UNEN" className="w-auto h-8 rounded-lg object-contain shadow-sm" />
         </div>
         <SyncStatus />
       </div>

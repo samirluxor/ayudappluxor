@@ -160,7 +160,7 @@ export default function About() {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div className="text-center">
-        <img src="/logo.webp" alt="MANOS QUE UNEN" className="w-24 h-24 mx-auto mb-4 rounded-2xl shadow-lg object-cover" />
+        <img src="/logo.webp" alt="MANOS QUE UNEN" className="max-w-xs mx-auto mb-4 rounded-2xl shadow-lg object-contain" />
         <h2 className="text-3xl font-bold text-gray-800">MANOS QUE UNEN</h2>
         <p className="text-gray-500 mt-2">Censo y encuestas para la reconstrucción</p>
       </div>

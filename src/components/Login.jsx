@@ -91,7 +91,7 @@ export default function Login() {
       <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-white pointer-events-none" />
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <img src="/logo.webp" alt="MANOS QUE UNEN" className="w-24 h-24 mx-auto mb-3 rounded-2xl shadow-lg object-cover" />
+          <img src="/logo.webp" alt="MANOS QUE UNEN" className="max-w-xs mx-auto mb-3 rounded-2xl shadow-lg object-contain" />
           <p className="text-gray-800 mt-1">Una iniciativa de Supermercados Luxor</p>
         </div>
 
