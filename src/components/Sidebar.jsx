@@ -10,7 +10,7 @@ const navItems = [
   { label: 'Encuestas', path: '/dashboard', icon: HomeIcon, adminOnly: false },
   { label: 'Psicobienestar', path: '/psicobienestar', icon: HeartIcon, adminOnly: false },
   { label: 'Usuarios', path: '/users', icon: UsersIcon, adminOnly: true },
-  { label: 'Más sobre Ayudapp', path: '/about', icon: InformationCircleIcon, adminOnly: false },
+  { label: 'Más de SOMOS LUXOR', path: '/about', icon: InformationCircleIcon, adminOnly: false },
 ]
 
 export default function Sidebar({ open, setOpen }) {
